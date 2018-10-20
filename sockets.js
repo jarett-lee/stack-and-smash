@@ -5,13 +5,13 @@ module.exports = (server) => {
     let tokens = {};
     let worlds = {};
     io.on('connection', (socket) => {
-        socket.on('create-game', () => {
+        socket.on('create-game', (callback) => {
             let tok = "";
             while(((tok = tokengen.generate(4)) in tokens));//Generate token that doesn't already exist
             tokens[tok] = {"playerOne" : socket.id};
-            socket.emit("token", tok);
+            callback(tok);
             socket.join(tok);
-        })
+        });
 
         socket.on('join-game', (token) => {
             if(token in tokens){
