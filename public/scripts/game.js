@@ -1,4 +1,5 @@
 let fpsCounter = document.getElementById("fps");
+let remainingTimeDisplay = document.getElementById("remainingTime");
 
 let gameCanvas = document.getElementById("game-canvas");
 let ctx = gameCanvas.getContext("2d");
@@ -53,6 +54,9 @@ function draw(){
     local.bullets.forEach((bullet) => {
         drawBullet(bullet);
     });
+    
+    let remainingTime = s.remainingTime;
+    remainingTimeDisplay.innerText = s.remainingTime;
 
     // let fps = Math.round(1000 / (Date.now() - d));
     // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d)) + " " + s.time;

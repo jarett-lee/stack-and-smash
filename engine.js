@@ -204,7 +204,7 @@ module.exports = class Engine {
             bullets: bullets,
             blocks: blocks,
             platforms: platforms,
-            time: this.timer.remainingTime,
+            remainingTime: this.timer.remainingTime,
             winner: this.winner
         };
     }
