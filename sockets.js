@@ -26,7 +26,7 @@ module.exports = (server) => {
                 //Start game cycle
                 setInterval(() => {
                     //step game
-                    let gameData = worlds[token].step();
+                    let gameData = worlds[token].step(1/60);
                     socket.to(tokens[token].playerOne).emit("game-state", gameData);
                     socket.emit('game-state', gameData);
                     //export game data
