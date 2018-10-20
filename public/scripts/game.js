@@ -61,7 +61,9 @@ function drawBasicBlock(block){
     ctx.save();
     ctx.translate(block.x, block.y);
     ctx.rotate(block.angle * Math.PI / 180);
-    ctx.drawImage(basicBlockImage, -block.width/2, -block.height/2, 30, 30);
+    ctx.fillStyle = "#FFFFFF";
+    // ctx.fillRect(-block.width/2, -block.height/2, 30, 30);
+    ctx.drawImage(basicBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
     ctx.restore();
 }
 

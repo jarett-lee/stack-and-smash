@@ -38,7 +38,7 @@ module.exports = class Engine {
         
         // Create a World
         const world = new p2.World({
-            gravity: [0, -10]
+            gravity: [0, -1000]
         });
 
         this.world = world;
@@ -77,52 +77,38 @@ module.exports = class Engine {
         // Create blocks
         this.players['p1'].blockBodies = [];
         
-        let blockShape = new p2.Box({
-            width: 30,
-            height: 30
-        });
-        let blockBody = new p2.Body({
-            // angle: Math.random() * 360,
-            position: [0, 0],
-            velocity: [0, 0],
-            mass: 1
-        });
+        for (let i = 0; i < 5; i++) {
+           let blockShape = new p2.Box({
+                width: 30,
+                height: 30
+            });
+            let blockBody = new p2.Body({
+                angle: Math.random() * 360,
+                position: [-100 + i * 35, 5],
+                mass: 1
+            });
             blockBody.addShape(blockShape);
             this.players['p1'].blockBodies.push(blockBody);
             world.addBody(blockBody);
-
-        // for (let i = 0; i < 5; i++) {
-        //    let blockShape = new p2.Box({
-        //         width: 30,
-        //         height: 30
-        //     });
-        //     let blockBody = new p2.Body({
-        //         angle: Math.random() * 360,
-        //         position: [-100 + i * 35, 5],
-        //         mass: 1
-        //     });
-        //     blockBody.addShape(blockShape);
-        //     this.players['p1'].blockBodies.push(blockBody);
-        //     world.addBody(blockBody);
-        // }
+        }
 
         // Create blocks
         this.players['p2'].blockBodies = [];
         
-        // for (let i = 0; i < 5; i++) {
-        //     let blockShape = new p2.Box({
-        //         width: 30,
-        //         height: 30
-        //     });
-        //     let blockBody = new p2.Body({
-        //         angle: Math.random() * 360,
-        //         position: [-100 + i * 35, 5],
-        //         mass: 1
-        //     });
-        //     blockBody.addShape(blockShape);
-        //     this.players['p2'].blockBodies.push(blockBody);
-        //     world.addBody(blockBody);
-        // }
+        for (let i = 0; i < 5; i++) {
+            let blockShape = new p2.Box({
+                width: 30,
+                height: 30
+            });
+            let blockBody = new p2.Body({
+                angle: Math.random() * 360,
+                position: [-100 + i * 35, 5],
+                mass: 1
+            });
+            blockBody.addShape(blockShape);
+            this.players['p2'].blockBodies.push(blockBody);
+            world.addBody(blockBody);
+        }
     
         // Create bullets
         this.bulletBodies = [];
