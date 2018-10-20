@@ -496,9 +496,10 @@ module.exports = class Engine {
 
     calcHeight (playerId) {
         const blocks = this.players[playerId].blockBodies;
+        const minHeight = -70;
 
         if (blocks.length === 0)
-            return 0;
+            return minHeight;
 
         let maxHeight = blocks[0].position[1] + blocks[0].boundingRadius;
 
@@ -511,6 +512,6 @@ module.exports = class Engine {
         
         maxHeight = maxHeight + 30; // Prevent collision
 
-        return Math.max(Math.min(maxHeight, 400), 0);
+        return Math.max(Math.min(maxHeight, 400), minHeight);
     }
 }
