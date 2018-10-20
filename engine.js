@@ -13,6 +13,10 @@ module.exports = class Engine {
         this.players[player1] = {};
         this.players[player2] = {};
         
+        this.cooldown = 200;
+        this.players[player1].cooldownDoneTime = 0;
+        this.players[player2].cooldownDoneTime = 0;
+        
         // Create a World
         const world = new p2.World({
             gravity: [0, -1000]
@@ -263,6 +267,15 @@ module.exports = class Engine {
             if (x <= 0) {
                 return false;
             }
+        }
+
+        const hrTime = process.hrtime();
+        const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
+        if (this.players[playerId].cooldownDoneTime <= milli) {
+            this.players[playerId].cooldownDoneTime = milli + this.cooldown;
+        }
+        else {
+            return false;
         }
 
         let blockShape = new p2.Box({
