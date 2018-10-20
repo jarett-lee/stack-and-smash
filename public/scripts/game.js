@@ -47,7 +47,6 @@ function draw(){
     fpsCounter.innerHTML = Math.round(1000/(Date.now() - d));
     d = Date.now();
     if(fps > 90 || fps < 30){
-        console.warn("reeeeeeeeee", fps);
         window.cancelAnimationFrame(handler)
     }
     window.requestAnimationFrame(draw);
@@ -75,3 +74,19 @@ function clear(){
     ctx.fillStyle = "#7aadff";
     ctx.fillRect(-canvasWidth/2, -canvasHeight/2, canvasWidth, canvasHeight);
 }
+
+gameCanvas.addEventListener('click', () => {
+    const rect = gameCanvas.getBoundingClientRect();
+    const x = event.clientX - rect.left - 400;
+    const y = (event.clientY - rect.top - 200) * -1;
+
+    console.log(x, y);
+
+    socket.emit('create-block', {
+        token: gameToken,
+        x: x,
+        y: y
+    }, (success) => {
+        console.log(success);
+    })
+});
