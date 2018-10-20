@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Stack and Smash</title>
-    <link rel="stylesheet" type="text/css" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/animate.css" />
 </head>
 <body>
-    <div id="main-menu" class="center-component">
-        <h1 id="title">Stack and Smash</h1>
+    <div id="main-menu" class="animated bounceInDown center-component">
+        <h1 id="title" class="animated bounceInDown">Stack and Smash</h1>
         
-        <div id="main-menu-buttons">
-            <button onclick="show('game-id')">Create Game</button>
+        <div id="main-menu-buttons" class="button-group">
+            <button onclick="createGame()">Create Game</button>
             <button onclick="show('join-game')">Join Game</button>
         </div>
     </div>
@@ -20,8 +21,10 @@
         <br />
 
         <div id="game-token">
-            asdf-qwerty
         </div>
+        <br />
+
+        <button onclick="show('main-menu')" class="button-cancel">Cancel</button>
     </div>
 
     <div id="join-game" class="center-component">
@@ -30,9 +33,11 @@
 
         <input id="game-token-input" type="text" placeholder="Game Token" />
         <br />
-        <br />
 
-        <button>Join Game</button>
+        <div class="button-group">
+            <button onclick="joinGame()">Join Game</button>
+            <button onclick="show('main-menu')" class="button-cancel">Cancel</button>
+        </div>
     </div>
 
     <div id="game" class="game-screen">

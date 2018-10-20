@@ -4,6 +4,17 @@
     font-family: Arial;
 }
 
+
+@font-face {
+    font-family: QuirkyRobot;
+    src: url(../fonts/QuirkyRobot.ttf);
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 body > * {
     visibility: hidden;
 }
@@ -28,9 +39,6 @@ button:hover {
     width: 500px;
     margin: auto;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     text-align: center;
 }
 
@@ -54,18 +62,28 @@ button:hover {
     height: 100px;
     width: 100%;
 }
+.button-group button {
+    margin: 10px auto 0;
+}
+
+.button-group:first-child {
+    margin: 0 auto 0;
+}
+
+.button-cancel {
+    background: lightgrey;
+    color: black;
+}
 
 #title {
-    font-size: 40px;
+    font-size: 80px;
     text-align: center;
+    font-family: QuirkyRobot;
+    letter-spacing: 2px;
 }
 
 #main-menu-buttons {
     margin-top: 20px;
-}
-
-#main-menu-buttons button {
-    margin: 10px auto 0;
 }
 
 #game-token-input {

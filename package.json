@@ -19,6 +19,8 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "p2": "^0.7.1",
+    "rand-token": "^0.4.0",
     "socket.io": "^2.1.1"
   }
 }
