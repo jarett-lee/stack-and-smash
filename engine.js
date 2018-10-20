@@ -1,5 +1,6 @@
 const p2 = require('p2');
 const BLOCK_SIZE = 15;
+const BLOCK_MASS = 25;
 module.exports = class Engine {
     
     constructor(player1, player2) {
@@ -245,21 +246,20 @@ module.exports = class Engine {
         });
     }
 
-    addBlock(playerId, x, y) {
+    addBlock(playerId, x, y, blockType) {
         if (this.timer.remainingTime === 0)
             return false;
-
-        let blockShape = new p2.Box({
-            width: 30,
-            height: 30
-        });
-        let blockBody = new p2.Body({
-            // angle: Math.random() * 360,
-            position: [x, y],
-            velocity: [0, 0],
-            mass: 100
-        });
-        blockBody.addShape(blockShape);
+        let blockBody = {};
+        if(blockType === "square-block"){
+            blockBody = newSquareBlock(x, y);
+        }else if(blockType === "long-block"){
+            blockBody = newLongBlock(x, y);
+        }else if(blockType === "l-block"){
+            blockBody = this.newLBlock(x, y);
+        }else if(blockType === "jank-block"){
+            blockBody = this.newJankBlock(x, y);
+        }
+        
         this.players[playerId].blockBodies.push(blockBody);
         this.world.addBody(blockBody);
         return true; // failed to place the block
@@ -273,7 +273,7 @@ module.exports = class Engine {
         })
     }
     newSquareBlock(x, y){
-        let blockBody = newBody(x, y, 100);
+        let blockBody = newBody(x, y, BLOCK_MASS * 4);
         let boxShape = new p2.Box({
             width: 30,
             height: 30
@@ -282,7 +282,7 @@ module.exports = class Engine {
         return blockBody;
     }
     newLongBlock(x, y){
-        let blockBody = newBody(x, y, 100);
+        let blockBody = newBody(x, y, BLOCK_MASS * 4);
         let longShape = new p2.Box({
             width: 15,
             height: 60
@@ -292,11 +292,17 @@ module.exports = class Engine {
     }
 
     newJankBlock(x, y){
+        let blockBody = newBody(x, y, BLOCK_MASS * 4);
 
+        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, 0]);
+        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, BLOCK_SIZE]);
+        blockBody.addShape(this.newBlockShape(), [-BLOCK_SIZE/2, 0]);
+        blockBody.addShape(this.newBlockShape(), [-BLOCK_SIZE/2, -BLOCK_SIZE]);
+        return blockBody;
     }
 
     newLBlock(x, y){
-        let blockBody = new Body(x, y, 75);
+        let blockBody = new Body(x, y, BLOCK_MASS * 3);
         
         blockBody.addShape(this.newBlockShape());
         blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE, 0]);
