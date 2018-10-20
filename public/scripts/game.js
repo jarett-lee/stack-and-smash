@@ -28,14 +28,10 @@ c = {
     width: 30,
     angle: 0
 }
-let s = null;
 
 clear();
 let handler = window.requestAnimationFrame(draw);
 
-socket.on('game-state', (state) => {
-    s = state;
-});
 let d = Date.now();
 function draw(){
     if(!s){
