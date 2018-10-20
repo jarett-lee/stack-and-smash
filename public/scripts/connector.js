@@ -2,7 +2,7 @@
  * For API calls to the backend
  */
 
-const socket = io('http://localhost:3000');
+// const socket = io('http://localhost:3000');
 
 /**
  * Chuck the user in a game and get the game token
