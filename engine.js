@@ -211,6 +211,9 @@ module.exports = class Engine {
             }
         ));
 
+        const playerOneHeight = this.calcHeight(Object.keys(this.players)[0]);
+        const playerTwoHeight = this.calcHeight(Object.keys(this.players)[1]);
+
         let right = this.players[playerid].rightBlock;
         let left = this.players[playerid].leftBlock;
         
@@ -223,8 +226,9 @@ module.exports = class Engine {
             remainingTime: this.timer.remainingTime,
             winner: this.winner,
             leftBlock: left,
-            rightBlock: right
-
+            rightBlock: right,
+            playerOneHeight: playerOneHeight,
+            playerTwoHeight: playerTwoHeight
         };
     }
 
