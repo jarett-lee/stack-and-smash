@@ -24,7 +24,7 @@ module.exports = class Engine {
         world.defaultContactMaterial.friction = 100;
         world.solver.iterations = 20;
         world.solver.tolerance = 0.001;
-        world.setGlobalStiffness(1e4)
+        world.setGlobalStiffness(1e6)
 
         // Physics properties
         this.maxSubSteps = 5; // Max physics ticks per render frame
