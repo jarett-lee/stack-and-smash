@@ -16,6 +16,9 @@ module.exports = class Engine {
 
         // Set high friction so the wheels don't slip
         world.defaultContactMaterial.friction = 100;
+        world.solver.iterations = 20;
+        world.solver.tolerance = 0.001;
+        world.setGlobalStiffness(1e4)
 
         // Physics properties
         this.maxSubSteps = 5; // Max physics ticks per render frame

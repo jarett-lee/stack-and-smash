@@ -100,7 +100,7 @@ function clear(){
     ctx.fillRect(-canvasWidth/2, -canvasHeight/2, canvasWidth, canvasHeight);
 }
 
-gameCanvas.addEventListener('click', () => {
+gameCanvas.addEventListener('click', (event) => {
     const rect = gameCanvas.getBoundingClientRect();
     const x = event.clientX - rect.left - 400;
     const y = (event.clientY - rect.top - 200) * -1;
