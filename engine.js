@@ -79,11 +79,12 @@ module.exports = class Engine {
         
         for (let i = 0; i < 5; i++) {
            let blockShape = new p2.Box({
-                width: .5,
-                height: .5
+                width: 30,
+                height: 30
             });
             let blockBody = new p2.Body({
-                position: [-5, 5 + i],
+                angle: Math.random() * 360,
+                position: [-100 + i * 35, 5],
                 mass: .5
             });
             blockBody.addShape(blockShape);
@@ -96,11 +97,12 @@ module.exports = class Engine {
         
         for (let i = 0; i < 5; i++) {
             let blockShape = new p2.Box({
-                width: .5,
-                height: .5
+                width: 30,
+                height: 30
             });
             let blockBody = new p2.Body({
-                position: [5, 5 + i],
+                angle: Math.random() * 360,
+                position: [-100 + i * 35, 5],
                 mass: .5
             });
             blockBody.addShape(blockShape);

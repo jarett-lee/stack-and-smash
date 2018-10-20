@@ -27,6 +27,19 @@ c = {
     angle: 0
 }
 clear();
+let s = null;
+socket.on('game-state', (state) => {
+    s = state;
+    window.requestAnimationFrame(draw)
+});
+
+function draw(){
+    clear();
+    let local = s;
+    local.blocks.forEach((block) => {
+        drawBasicBlock(block);
+    });
+}
 
 function drawBasicBlock(block){
     ctx.save();
