@@ -253,6 +253,17 @@ module.exports = class Engine {
     addBlock(playerId, x, y) {
         if (this.timer.remainingTime === 0)
             return false;
+        
+        if (playerId === this.playerOne) {
+            if (x >= 0) {
+                return false;
+            }
+        }
+        else {
+            if (x <= 0) {
+                return false;
+            }
+        }
 
         let blockShape = new p2.Box({
             width: 30,
