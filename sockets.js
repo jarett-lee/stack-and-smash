@@ -13,6 +13,12 @@ module.exports = (server) => {
             socket.join(tok);
         });
 
+        socket.on('cancel-game', (token, callback) => {
+            tokens[token] = undefined;
+            socket.leave(token);
+            callback();
+        });
+
         socket.on('join-game', (token, callback) => {
             if(token in tokens){
                 //Join Room
