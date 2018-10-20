@@ -17,7 +17,7 @@ module.exports = (server) => {
             if(token in tokens){
                 //Join Room
                 socket.join(token);
-                tokens[tok].playerTwo = socket.id;
+                tokens[token].playerTwo = socket.id;
                 
                 //create World
                 let playerOne = tokens[token].playerOne;
