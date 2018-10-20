@@ -62,6 +62,15 @@ button:hover {
     height: 100px;
     width: 100%;
 }
+
+.no-select *{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .button-group button {
     margin: 10px auto 0;
 }
