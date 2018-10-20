@@ -5,18 +5,47 @@
     <title>Stack and Smash</title>
 
     <link rel="stylesheet" href="./css/main.css" />
-
 </head>
 <body>
-    <div id="main-menu">
+    <div id="main-menu" class="center-component">
         <h1 id="title">Stack and Smash</h1>
         
         <div id="main-menu-buttons">
-            <button id="create-game">Create Game</button>
-            <button id="join-game">Join Game</button>
+            <button onclick="show('game-id')">Create Game</button>
+            <button onclick="show('join-game')">Join Game</button>
         </div>
     </div>
+
+    <div id="game-id" class="center-component">
+        <h2>Share this Token with a Friend</h2>
+        <br />
+
+        <div id="game-token">
+            asdf-qwerty
+        </div>
+    </div>
+
+    <div id="join-game" class="center-component">
+        <h2>Enter a Game Token to Join</h2>
+        <br />
+
+        <input id="game-token-input" type="text" placeholder="Game Token" />
+        <br />
+        <br />
+
+        <button>Join Game</button>
+    </div>
+
+    <div id="game">
+        <canvas id="game-canvas">
+
+        </canvas>
+    </div>
 </body>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 <script src="./scripts/main.js"></script>
+<script src="./scripts/interface.js"></script>
+<script src="./scripts/connector.js"></script>
+
 </html>

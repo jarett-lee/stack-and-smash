@@ -9,21 +9,49 @@ html, body {
     height: 100%;
 }
 
+body > * {
+    visibility: hidden;
+}
+
+button {
+    display: block;
+    margin: auto;
+    width: 200px;
+    color: white;
+    background: #007bff;
+    border: 0;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+.center-component {
+    width: 500px;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
 #title {
     font-size: 40px;
     text-align: center;
 }
 
-#main-menu {
-    width: 500px;
-    margin: auto;
+#main-menu-buttons {
+    margin-top: 20px;
 }
 
 #main-menu-buttons button {
-    display: block;
-    width: 200px;
-    margin: auto;
-    color: white;
-    background: #007bff;
-    border: 0;
+    margin: 10px auto 0;
+}
+
+#game-token-input {
+    width: 196px;
 }
