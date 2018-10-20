@@ -9,6 +9,7 @@ module.exports = class Engine {
         };
 
         this.players = {};
+        this.playerOne = player1;
         this.players[player1] = {};
         this.players[player2] = {};
         
@@ -49,6 +50,7 @@ module.exports = class Engine {
         
         this.players[player1].platformBody = platformBody;
         this.players[player1].blockBodies = [];
+        platformBody.playerOne = true;
 
         // Create a platform
         platformShape = new p2.Box({
@@ -64,6 +66,7 @@ module.exports = class Engine {
 
         this.players[player2].platformBody = platformBody;
         this.players[player2].blockBodies = [];
+        platformBody.playerOne = false;
         
         this.createFakeWorld();
     }
@@ -149,7 +152,8 @@ module.exports = class Engine {
                 y: bb.position[1],
                 width: bb.shapes[0].width,
                 height: bb.shapes[0].height,
-                angle: bb.angle
+                angle: bb.angle,
+                playerOne: bb.playerOne
             }
         ));
 
@@ -159,7 +163,8 @@ module.exports = class Engine {
                 y: pb.position[1],
                 width: pb.shapes[0].width,
                 height: pb.shapes[0].height,
-                angle: pb.angle
+                angle: pb.angle,
+                playerOne: pb.playerOne
             }
         ));
         
@@ -261,6 +266,7 @@ module.exports = class Engine {
         });
         blockBody.addShape(blockShape);
         this.players[playerId].blockBodies.push(blockBody);
+        blockBody.playerOne = playerId === this.playerOne;
         this.world.addBody(blockBody);
         return true; // failed to place the block
     }
