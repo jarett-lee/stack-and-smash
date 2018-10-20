@@ -7,7 +7,7 @@ module.exports = (server) => {
     io.on('connection', (socket) => {
         socket.on('create-game', () => {
             let tok = "";
-            while(!((tok = tokengen.generate(4)) in tokens));//Generate token that doesn't already exist
+            while(((tok = tokengen.generate(4)) in tokens));//Generate token that doesn't already exist
             tokens[tok] = {"playerOne" : socket.id};
             socket.emit("token", tok);
             socket.join(tok);
