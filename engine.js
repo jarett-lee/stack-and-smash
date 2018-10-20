@@ -41,4 +41,15 @@ module.exports = class Engine {
         this.player[playerId].platformShape = platformShape;
         this.player[playerId].platformBody = platformBody;
     }
+    
+    step() {
+        const hrTime = process.hrtime();
+        // hrTime[0] * 1000 + hrTime[1] / 1000000
+        return {};
+    }
+    
+    addBlock(playerId, x, y) {
+        // return true; // placed the block
+        return false; // failed to place the block
+    }
 }
