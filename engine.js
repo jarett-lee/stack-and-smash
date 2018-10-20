@@ -17,8 +17,8 @@ module.exports = class Engine {
         this.boxes = [];
 
         // Init players
-        initPlayer(player1, -5);
-        initPlayer(player2, 5);
+        this.initPlayer(player1, -5);
+        this.initPlayer(player2, 5);
     }
 
     initPlayer(playerId, x) {
@@ -40,5 +40,16 @@ module.exports = class Engine {
         this.player[playerId] = {};
         this.player[playerId].platformShape = platformShape;
         this.player[playerId].platformBody = platformBody;
+    }
+    
+    step() {
+        const hrTime = process.hrtime();
+        // hrTime[0] * 1000 + hrTime[1] / 1000000
+        return {};
+    }
+    
+    addBlock(playerId, x, y) {
+        // return true; // placed the block
+        return false; // failed to place the block
     }
 }
