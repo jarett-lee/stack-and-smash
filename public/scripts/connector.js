@@ -2,8 +2,6 @@
  * For API calls to the backend
  */
 
-// const socket = io('http://localhost:3000');
-
 /**
  * Chuck the user in a game and get the game token
  */
@@ -12,7 +10,17 @@ function createGame () {
     socket.emit('create-game', function (token) {
         // Receive game token from server upon successful request
         document.getElementById("game-token").innerHTML = token;
+        gameToken = token;
         show('game-id');
+    });
+}
+
+/**
+ *
+ */
+function cancelGame () {
+    socket.emit('cancel-game', gameToken, function () {
+        show('main-menu');
     });
 }
 
@@ -20,10 +28,12 @@ function createGame () {
  * Request to join a game with the token in the token field
  */
 function joinGame () {
-    const gameToken = document.getElementById("game-token-input").value;
+    const token = document.getElementById("game-token-input").value;
 
     // Send the game token to the server
-    socket.emit('join-game', gameToken, function (success) {
+    socket.emit('join-game', token, function (success) {
+        gameToken = token;
+
         // If successfully joined game from game token
         if (success) {
             show("game");
