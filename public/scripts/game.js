@@ -9,6 +9,8 @@ let basicBlockImage = new Image(30, 30);
 basicBlockImage.src = "/img/basic.png";
 let cannonImage = new Image(30,30);
 cannonImage.src = "/img/cannon.png";
+let bulletImage = new Image(6, 6);
+bulletImage.src = "/img/bullet.png";
 
 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 ctx.translate(canvasWidth / 2, canvasHeight / 2)
@@ -43,12 +45,19 @@ function draw(){
     local.blocks.forEach((block) => {
         drawBasicBlock(block);
     });
-    let fps = Math.round(1000 / (Date.now() - d));
-    fpsCounter.innerHTML = Math.round(1000/(Date.now() - d));
-    d = Date.now();
-    if(fps > 90 || fps < 30){
-        window.cancelAnimationFrame(handler)
-    }
+    local.platforms.forEach((platform) => {
+        drawPlatform(platform);
+    });
+    local.bullets.forEach((bullet) => {
+        drawBullet(bullet);
+    });
+
+    // let fps = Math.round(1000 / (Date.now() - d));
+    // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d));
+    // d = Date.now();
+    // if(fps > 90 || fps < 30){
+    //     console.warn("Inadequate performance", fps);
+    // }
     window.requestAnimationFrame(draw);
 }
 
@@ -57,7 +66,6 @@ function drawBasicBlock(block){
     ctx.translate(block.x, block.y);
     ctx.rotate(block.angle);
     ctx.fillStyle = "#FFFFFF";
-    // ctx.fillRect(-block.width/2, -block.height/2, 30, 30);
     ctx.drawImage(basicBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
     ctx.restore();
 }
@@ -66,7 +74,24 @@ function drawCannon(cannon){
     ctx.save();
     ctx.translate(cannon.x, cannon.y);
     ctx.rotate(cannon.angle * Math.PI / 180);
-    ctx.drawImage(cannonImage, -cannon.width / 2, -cannon.height / 2, 30, 30);
+    ctx.drawImage(cannonImage, 0, 0, 30, 30, -cannon.width / 2, -cannon.height / 2, 30, 30);
+    ctx.restore();
+}
+
+function drawPlatform(platform){
+    ctx.save();
+    ctx.translate(platform.x, platform.y);
+    ctx.rotate(platform.angle * Math.PI / 180);
+    ctx.fillStyle = "#bfbfbf";
+    ctx.fillRect(-platform.width/2, -platform.height/2, platform.width, platform.height);
+    ctx.restore();
+}
+
+function drawBullet(bullet){
+    ctx.save();
+    ctx.translate(bullet.x, bullet.y);
+    ctx.fillStyle="#FF0000";
+    ctx.drawImage(bulletImage, 0, 0, 6, 6, -bullet.radius, -bullet.radius, 6, 6);
     ctx.restore();
 }
 
