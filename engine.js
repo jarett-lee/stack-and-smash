@@ -3,6 +3,11 @@ const p2 = require('p2');
 module.exports = class Engine {
 
     constructor(player1, player2) {
+        this.timer = {
+            start: Date.now(),
+            duration: 30
+        };
+
         this.players = {};
         this.players[player1] = {};
         this.players[player2] = {};
@@ -43,6 +48,7 @@ module.exports = class Engine {
         world.addBody(platformBody);
         
         this.players[player1].platformBody = platformBody;
+        this.players[player1].blockBodies = [];
 
         // Create a platform
         platformShape = new p2.Box({
@@ -57,6 +63,7 @@ module.exports = class Engine {
         world.addBody(platformBody);
 
         this.players[player2].platformBody = platformBody;
+        this.players[player2].blockBodies = [];
         
         this.createFakeWorld();
     }
@@ -64,39 +71,6 @@ module.exports = class Engine {
     createFakeWorld() {
         const world = this.world;
 
-        // Create blocks
-        this.players[Object.keys(this.players)[0]].blockBodies = [];
-        for (let i = 0; i < 5; i++) {
-           let blockShape = new p2.Box({
-                width: 30,
-                height: 30
-            });
-            let blockBody = new p2.Body({
-                position: [-100 + i * 35, 5],
-                mass: 1
-            });
-            blockBody.addShape(blockShape);
-            this.players[Object.keys(this.players)[0]].blockBodies.push(blockBody);
-            world.addBody(blockBody);
-        }
-
-        // Create blocks
-        this.players[Object.keys(this.players)[1]].blockBodies = [];
-        
-        for (let i = 0; i < 5; i++) {
-            let blockShape = new p2.Box({
-                width: 30,
-                height: 30
-            });
-            let blockBody = new p2.Body({
-                position: [-100 + i * 35, 5],
-                mass: 1
-            });
-            blockBody.addShape(blockShape);
-            this.players[Object.keys(this.players)[1]].blockBodies.push(blockBody);
-            world.addBody(blockBody);
-        }
-    
         // Create bullets
         this.bulletBodies = [];
         
@@ -105,8 +79,8 @@ module.exports = class Engine {
                 radius: 3
             });
             let bulletBody = new p2.Body({
-                position: [-4, 1 + i],
-                velocity: [5, 9],
+                position: [-100, 10 + 20*i],
+                velocity: [500, 100],
                 mass: .3
             });
             bulletBody.addShape(bulletShape);
@@ -120,8 +94,8 @@ module.exports = class Engine {
                 radius: 3
             });
             let bulletBody = new p2.Body({
-                position: [20, 20],
-                velocity: [0, 0],
+                position: [100, 20*i],
+                velocity: [-500, 100],
                 mass: .3
             });
             bulletBody.addShape(bulletShape);
@@ -152,6 +126,14 @@ module.exports = class Engine {
     }
 
     step() {
+        this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
+        if (this.timer.remainingTime < 0)
+            this.timer.remainingTime = 0;
+
+        const hrTime = process.hrtime();
+        const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
+        this.updatePhysics(milli);
+
         let bullets = this.getBulletBodies().map((bb) => (
             {
                 x: bb.position[0],
@@ -181,13 +163,11 @@ module.exports = class Engine {
             }
         ));
         
-        const hrTime = process.hrtime();
-        const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
-        this.updatePhysics(milli);
         return {
             bullets: bullets,
             blocks: blocks,
-            platforms: platforms
+            platforms: platforms,
+            time: this.timer.remainingTime
         };
     }
 
@@ -227,29 +207,25 @@ module.exports = class Engine {
             world.addBody(addBodies[i]);
         }
         addBodies.length = 0;
-
-        // Delete all out of bound bodies
-        // for (var i=0; i < world.bodies.length; i++){
-        //   deleteIfOutOfBounds(world.bodies[i]);
-        // }
         */
 
-        // Get the elapsed time since last frame, in seconds
-        let deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
-        // Make sure the time delta is not too big (can happen if user switches browser tab)
-        deltaTime = Math.min(1 / 10, deltaTime);
-        // Move physics bodies forward in time
-        // world.step(fixedDeltaTime, deltaTime, maxSubSteps);
+        // Delete all out of bound bodies
         world.bodies.forEach((body) => {
             if(body.position[1] < -200){
                 this.removeBody(body);
-                
             }
         });
-
         
+        // Get the elapsed time since last frame, in seconds
+        let deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
 
-        world.step(fixedDeltaTime);
+        // Make sure the time delta is not too big (can happen if user switches browser tab)
+        deltaTime = Math.min(1 / 10, deltaTime);
+
+        // Move physics bodies forward in time
+        if (this.timer.remainingTime > 0)
+            world.step(fixedDeltaTime, deltaTime, maxSubSteps);
+
         this.lastTime = time;
     }
 
@@ -270,6 +246,9 @@ module.exports = class Engine {
     }
 
     addBlock(playerId, x, y) {
+        if (this.timer.remainingTime === 0)
+            return false;
+
         let blockShape = new p2.Box({
             width: 30,
             height: 30
@@ -278,7 +257,7 @@ module.exports = class Engine {
             // angle: Math.random() * 360,
             position: [x, y],
             velocity: [0, 0],
-            mass: 10
+            mass: 100
         });
         blockBody.addShape(blockShape);
         this.players[playerId].blockBodies.push(blockBody);

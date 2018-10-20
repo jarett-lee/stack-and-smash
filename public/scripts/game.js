@@ -53,7 +53,7 @@ function draw(){
     });
 
     // let fps = Math.round(1000 / (Date.now() - d));
-    // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d));
+    // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d)) + " " + s.time;
     // d = Date.now();
     // if(fps > 90 || fps < 30){
     //     console.warn("Inadequate performance", fps);
