@@ -104,7 +104,7 @@ module.exports = class Engine {
                 mass: 1
             });
             blockBody.addShape(blockShape);
-            this.players['p2'].blockBodies.push(blockBody);
+            this.players[Object.keys(this.players)[1]].blockBodies.push(blockBody);
             world.addBody(blockBody);
         }
     
