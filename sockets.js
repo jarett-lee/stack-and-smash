@@ -32,7 +32,7 @@ module.exports = (server) => {
                 //Start game cycle
                 setInterval(() => {
                     //step game
-                    let gameData = worlds[token].step();
+                    let gameData = worlds[token].step(socket.id);
                     gameData.playerOne = true;
                     socket.to(tokens[token].playerOne).emit("game-state", gameData);
                     gameData.playerOne = false;

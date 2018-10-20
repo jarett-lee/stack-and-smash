@@ -23,6 +23,11 @@ module.exports = class Engine {
         this.players[player1].cooldownDoneTime = 0;
         this.players[player2].cooldownDoneTime = 0;
         
+        this.players[player1].rightBlock = this.getRandBlockType();
+        this.players[player1].leftBlock = this.getRandBlockType();
+        this.players[player2].rightBlock = this.getRandBlockType();
+        this.players[player2].leftBlock = this.getRandBlockType();
+
         // Create a World
         const world = new p2.World({
             gravity: [0, -1000]
@@ -137,7 +142,7 @@ module.exports = class Engine {
         }, 5000);
     }
 
-    step() {
+    step(playerid) {
         this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
         if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
@@ -194,6 +199,9 @@ module.exports = class Engine {
                 playerOne: pb.playerOne
             }
         ));
+
+        let right = this.players[playerid].rightBlock;
+        let left = this.players[playerid].leftBlock;
         
         return {
             bullets: bullets,
@@ -202,7 +210,10 @@ module.exports = class Engine {
             platforms: platforms,
             errorMessage: this.errorMessage,
             remainingTime: this.timer.remainingTime,
-            winner: this.winner
+            winner: this.winner,
+            leftBlock: left,
+            rightBlock: right
+
         };
     }
 
@@ -329,6 +340,22 @@ module.exports = class Engine {
         
         this.errorMessage = "";
         return true;
+    }
+
+    getRandBlockType(){
+        let blockTypes = ["basicBlock", "longBlock", "lBlock"];
+        let num = Math.random();
+
+        if(num < .1){
+            return {type: "cannon"};
+        }
+        else{
+            let type = blockTypes[Math.floor(Math.random() * blockTypes.length)];
+            let angle = Math.floor(Math.random() * 4) * 90;
+            return {type: type, angle: angle};
+        }
+        
+
     }
 
     newBody(x, y, mass){
