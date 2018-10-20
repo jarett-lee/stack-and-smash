@@ -118,6 +118,10 @@ module.exports = class Engine {
     }
 
     step() {
+        const hrTime = process.hrtime();
+        const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
+        this.updatePhysics(milli);
+
         let bullets = this.getBulletBodies().map((bb) => (
             {
                 x: bb.position[0],
@@ -147,9 +151,6 @@ module.exports = class Engine {
             }
         ));
         
-        const hrTime = process.hrtime();
-        const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
-        this.updatePhysics(milli);
         return {
             bullets: bullets,
             blocks: blocks,
