@@ -256,7 +256,7 @@ module.exports = class Engine {
             return false;
         let blockBody = {};
         if(blockType === "square-block"){
-            blockBody = newSquareBlock(x, y);
+            blockBody = this.newSquareBlock(x, y);
         }else if(blockType === "long-block"){
             blockBody = newLongBlock(x, y);
         }else if(blockType === "l-block"){
@@ -278,7 +278,7 @@ module.exports = class Engine {
         })
     }
     newSquareBlock(x, y){
-        let blockBody = newBody(x, y, BLOCK_MASS * 4);
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
         let boxShape = new p2.Box({
             width: 30,
             height: 30
@@ -287,7 +287,7 @@ module.exports = class Engine {
         return blockBody;
     }
     newLongBlock(x, y){
-        let blockBody = newBody(x, y, BLOCK_MASS * 4);
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
         let longShape = new p2.Box({
             width: 15,
             height: 60
