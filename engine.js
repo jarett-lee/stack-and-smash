@@ -3,6 +3,11 @@ const p2 = require('p2');
 module.exports = class Engine {
 
     constructor(player1, player2) {
+        this.timer = {
+            start: Date.now(),
+            duration: 30
+        };
+
         this.players = {};
         this.players[player1] = {};
         this.players[player2] = {};
@@ -151,6 +156,10 @@ module.exports = class Engine {
     }
 
     step() {
+        this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
+        if (this.timer.remainingTime < 0)
+            this.timer.remainingTime = 0;
+
         let bullets = this.getBulletBodies().map((bb) => (
             {
                 x: bb.position[0],
@@ -186,7 +195,8 @@ module.exports = class Engine {
         return {
             bullets: bullets,
             blocks: blocks,
-            platforms: platforms
+            platforms: platforms,
+            time: this.timer.remainingTime
         };
     }
 
@@ -242,13 +252,12 @@ module.exports = class Engine {
         world.bodies.forEach((body) => {
             if(body.position[1] < -200){
                 this.removeBody(body);
-                
             }
         });
 
-        
+        if (this.timer.remainingTime > 0)
+            world.step(fixedDeltaTime);
 
-        world.step(fixedDeltaTime);
         this.lastTime = time;
     }
 
@@ -269,6 +278,9 @@ module.exports = class Engine {
     }
 
     addBlock(playerId, x, y) {
+        if (this.timer.remainingTime === 0)
+            return false;
+
         let blockShape = new p2.Box({
             width: 30,
             height: 30

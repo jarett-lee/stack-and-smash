@@ -44,7 +44,7 @@ function draw(){
         drawBasicBlock(block);
     });
     let fps = Math.round(1000 / (Date.now() - d));
-    fpsCounter.innerHTML = Math.round(1000/(Date.now() - d));
+    fpsCounter.innerHTML = Math.round(1000/(Date.now() - d)) + " " + s.time;
     d = Date.now();
     if(fps > 90 || fps < 30){
         window.cancelAnimationFrame(handler)
@@ -75,7 +75,7 @@ function clear(){
     ctx.fillRect(-canvasWidth/2, -canvasHeight/2, canvasWidth, canvasHeight);
 }
 
-gameCanvas.addEventListener('click', () => {
+gameCanvas.addEventListener('click', (event) => {
     const rect = gameCanvas.getBoundingClientRect();
     const x = event.clientX - rect.left - 400;
     const y = (event.clientY - rect.top - 200) * -1;
