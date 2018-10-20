@@ -1,7 +1,5 @@
 const socket = io('http://localhost:3000');
-let shownScreen = "main-menu";
+// let shownScreen = "main-menu";
+let shownScreen = "game";
 
-window.onload = function () {
-    document.getElementById(shownScreen).style.visibility = "initial";
-    console.log("asdf");
-};
+document.getElementById(shownScreen).style.visibility = "initial";
