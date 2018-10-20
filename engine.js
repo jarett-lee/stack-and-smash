@@ -29,11 +29,11 @@ module.exports = class Engine {
 
         // Create a platform
         let platformShape = new p2.Box({
-            width: 50,
+            width: 100,
             height: 5
         });
         let platformBody = new p2.Body({
-            position: [-100, -50],
+            position: [-150, -100],
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -43,11 +43,11 @@ module.exports = class Engine {
 
         // Create a platform
         platformShape = new p2.Box({
-            width: 50,
+            width: 100,
             height: 5
         });
         platformBody = new p2.Body({
-            position: [100, -50],
+            position: [150, -100],
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -69,7 +69,6 @@ module.exports = class Engine {
                 height: 30
             });
             let blockBody = new p2.Body({
-                angle: Math.random() * 360,
                 position: [-100 + i * 35, 5],
                 mass: 1
             });
@@ -87,7 +86,6 @@ module.exports = class Engine {
                 height: 30
             });
             let blockBody = new p2.Body({
-                angle: Math.random() * 360,
                 position: [-100 + i * 35, 5],
                 mass: 1
             });
@@ -99,34 +97,34 @@ module.exports = class Engine {
         // Create bullets
         this.bulletBodies = [];
         
-        // for (let i = 0; i < 5; i++) {
-        //     let bulletShape = new p2.Circle({
-        //         radius: .05
-        //     });
-        //     let bulletBody = new p2.Body({
-        //         position: [-4, 1 + i],
-        //         velocity: [5, 9],
-        //         mass: .3
-        //     });
-        //     bulletBody.addShape(bulletShape);
-        //     this.bulletBodies.push(bulletBody);
-        //     world.addBody(bulletBody);
-        // }
+        for (let i = 0; i < 5; i++) {
+            let bulletShape = new p2.Circle({
+                radius: 3
+            });
+            let bulletBody = new p2.Body({
+                position: [-4, 1 + i],
+                velocity: [5, 9],
+                mass: .3
+            });
+            bulletBody.addShape(bulletShape);
+            this.bulletBodies.push(bulletBody);
+            world.addBody(bulletBody);
+        }
 
         // Create bullets
-        // for (let i = 0; i < 5; i++) {
-        //     let bulletShape = new p2.Circle({
-        //         radius: .05
-        //     });
-        //     let bulletBody = new p2.Body({
-        //         position: [4, 1.5 + i],
-        //         velocity: [-5, 9],
-        //         mass: .3
-        //     });
-        //     bulletBody.addShape(bulletShape);
-        //     this.bulletBodies.push(bulletBody);
-        //     world.addBody(bulletBody);
-        // }
+        for (let i = 0; i < 5; i++) {
+            let bulletShape = new p2.Circle({
+                radius: 3
+            });
+            let bulletBody = new p2.Body({
+                position: [20, 20],
+                velocity: [0, 0],
+                mass: .3
+            });
+            bulletBody.addShape(bulletShape);
+            this.bulletBodies.push(bulletBody);
+            world.addBody(bulletBody);
+        }
     }
 
     initPlayer(playerId, x) {
