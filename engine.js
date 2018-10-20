@@ -4,9 +4,12 @@ const BLOCK_MASS = 25;
 module.exports = class Engine {
     
     constructor(player1, player2) {
+        this.isRunning = true;
+
         this.timer = {
             start: Date.now(),
-            duration: 30
+            duration: 30,
+            running: true
         };
 
         this.players = {};
@@ -108,6 +111,24 @@ module.exports = class Engine {
         }
     }
 
+    endGame () {
+        // Wait for blocks to settle and then calc the highest
+        setTimeout(() => {
+            this.isRunning = false;
+
+            const playerOneHeight = this.calcHeight(Object.keys(this.players)[0]);
+            const playerTwoHeight = this.calcHeight(Object.keys(this.players)[1]);
+
+            if (playerOneHeight > playerTwoHeight) {
+                // Player One wins
+                this.winner = 'player1';
+            } else {
+                // Player Two wins
+                this.winner = 'player2';
+            }
+        }, 5000);
+    }
+
     initPlayer(playerId, x) {
         const world = this.world;
 
@@ -131,8 +152,14 @@ module.exports = class Engine {
 
     step() {
         this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
-        if (this.timer.remainingTime < 0)
+        if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
+
+            if (this.timer.running) {
+                this.timer.running = false;
+                this.endGame();
+            }
+        }
 
         const hrTime = process.hrtime();
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
@@ -173,7 +200,8 @@ module.exports = class Engine {
             bullets: bullets,
             blocks: blocks,
             platforms: platforms,
-            time: this.timer.remainingTime
+            time: this.timer.remainingTime,
+            winner: this.winner
         };
     }
 
@@ -221,7 +249,7 @@ module.exports = class Engine {
                 this.removeBody(body);
             }
         });
-        
+
         // Get the elapsed time since last frame, in seconds
         let deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
 
@@ -229,7 +257,7 @@ module.exports = class Engine {
         deltaTime = Math.min(1 / 10, deltaTime);
 
         // Move physics bodies forward in time
-        if (this.timer.remainingTime > 0)
+        if (this.isRunning)
             world.step(fixedDeltaTime, deltaTime, maxSubSteps);
 
         this.lastTime = time;
@@ -343,4 +371,19 @@ module.exports = class Engine {
         return platformBodies;
     }
 
+    calcHeight (playerId) {
+        const blocks = this.players[playerId].blockBodies;
+
+        if (blocks.length === 0)
+            return 0;
+
+        let height = blocks[0].position[1];
+
+        for (let i = 0; i < blocks.length; i++) {
+            if (blocks[i].position[1] > height)
+                height = blocks[i].position[1];
+        }
+
+        return height + 400;
+    }
 }
