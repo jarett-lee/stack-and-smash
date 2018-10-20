@@ -48,11 +48,11 @@ module.exports = class Engine {
 
         // Create a platform
         let platformShape = new p2.Box({
-            width: 100,
+            width: 200,
             height: 5
         });
         let platformBody = new p2.Body({
-            position: [-150, -100],
+            position: [-250, -100],
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -65,11 +65,11 @@ module.exports = class Engine {
 
         // Create a platform
         platformShape = new p2.Box({
-            width: 100,
+            width: 200,
             height: 5
         });
         platformBody = new p2.Body({
-            position: [150, -100],
+            position: [250, -100],
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -299,6 +299,11 @@ module.exports = class Engine {
             }
         }
 
+        if (y < this.calcHeight(playerId)) {
+            this.errorMessage = "Place your block higher up";
+            return false;
+        }
+
         const hrTime = process.hrtime();
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
         if (this.players[playerId].cooldownDoneTime <= milli) {
@@ -430,6 +435,7 @@ module.exports = class Engine {
             height: BLOCK_SIZE
         });
     }
+
     getBlockBodies(){
         let blockBodies = [];
         for (let [ key, val ] of Object.entries(this.players)) {
@@ -467,13 +473,17 @@ module.exports = class Engine {
         if (blocks.length === 0)
             return 0;
 
-        let height = blocks[0].position[1];
+        let maxHeight = blocks[0].position[1] + blocks[0].boundingRadius;
 
-        for (let i = 0; i < blocks.length; i++) {
-            if (blocks[i].position[1] > height)
-                height = blocks[i].position[1];
+        for (let i = 1; i < blocks.length; i++) {
+            const height = blocks[i].position[1] + blocks[i].boundingRadius;
+            if (height > maxHeight) {
+                maxHeight = height;
+            }
         }
+        
+        maxHeight = maxHeight + 30; // Prevent collision
 
-        return height + 400;
+        return Math.max(Math.min(maxHeight, 400), 0);
     }
 }
