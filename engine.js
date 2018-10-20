@@ -1,9 +1,9 @@
 const p2  = require('p2');
 
 module.exports = class Engine {
-    
+
     constructor(player1, player2) {
-        this.player = {};
+        this.players = {};
         
         createFakeWorld();
         
@@ -15,19 +15,23 @@ module.exports = class Engine {
 
         // Set high friction so the wheels don't slip
         world.defaultContactMaterial.friction = 100;
-
+        
         // Write properties
         this.world = world;
-        this.boxes = [];
+        this.bullets = [];
+
+        // Physics properties
+        this.maxSubSteps = 5; // Max physics ticks per render frame
+        this.fixedDeltaTime = 1 / 30; // Physics "tick" delta time
 
         // Init players
         this.initPlayer(player1, -5);
         this.initPlayer(player2, 5);
         */
     }
-    
+
     createFakeWorld() {
-        this.player[playerId] = {};
+        this.players[playerId] = {};
         
         // Create a World
         const world = new p2.World({
@@ -51,8 +55,8 @@ module.exports = class Engine {
         platformBody.addShape(platformShape);
         world.addBody(platformBody);
         
-        this.player['p1'].platformBody = platformBody;
-        
+        this.players['p1'].platformBody = platformBody;
+
         // Create a platform
         platformShape = new p2.Box({
             width: 5,
@@ -64,11 +68,11 @@ module.exports = class Engine {
         });
         platformBody.addShape(platformShape);
         world.addBody(platformBody);
-        
-        this.player['p2'].platformBody = platformBody;
-        
+
+        this.players['p2'].platformBody = platformBody;
+
         // Create blocks
-        this.player['p1'].blockBodies = [];
+        this.players['p1'].blockBodies = [];
         
         for (let i = 0; i < 5; i++) {
             blockShape = new p2.Box({
@@ -80,13 +84,12 @@ module.exports = class Engine {
                 mass: .5
             });
             blockBody.addShape(blockShape);
-            this.player['p1'].blockBodies.push(blockBody);
+            this.players['p1'].blockBodies.push(blockBody);
             world.addBody(blockBody);
         }
-        
-        
+
         // Create blocks
-        this.player['p2'].blockBodies = [];
+        this.players['p2'].blockBodies = [];
         
         for (let i = 0; i < 5; i++) {
             blockShape = new p2.Box({
@@ -98,10 +101,10 @@ module.exports = class Engine {
                 mass: .5
             });
             blockBody.addShape(blockShape);
-            this.player['p2'].blockBodies.push(blockBody);
+            this.players['p2'].blockBodies.push(blockBody);
             world.addBody(blockBody);
         }
-        
+    
         this.blockBodies.push(platformBody);
         
         // Create bullets
@@ -120,7 +123,7 @@ module.exports = class Engine {
             this.bulletBodies.push(bulletBody);
             world.addBody(bulletBody);
         }
-        
+
         // Create bullets
         for (let i = 0; i < 5; i++) {
             bulletShape = new p2.Circle({
@@ -153,11 +156,11 @@ module.exports = class Engine {
         world.addBody(platformBody);
 
         // Write properties
-        this.player[playerId] = {};
-        this.player[playerId].platformShape = platformShape;
-        this.player[playerId].platformBody = platformBody;
+        this.players[playerId] = {};
+        this.players[playerId].platformShape = platformShape;
+        this.players[playerId].platformBody = platformBody;
     }
-    
+
     step() {
         const hrTime = process.hrtime();
         let bullets = bulletBodies.map((bb) => bb);
@@ -166,24 +169,89 @@ module.exports = class Engine {
 
 
         // hrTime[0] * 1000 + hrTime[1] / 1000000
+        const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
+        // this.updatePhysics(milli);
         return {};
     }
-    
+
+    updatePhysics(time) {
+        return;
+        
+        const lastTime = this.lastTime;
+        const maxSubSteps = this.maxSubSteps;
+        const fixedDeltaTime = this.fixedDeltaTime;
+        const world = this.world;
+        const bulletBodies = this.bulletBodies;
+
+        // allowShipCollision = true;
+        // if(keyShoot && !hideShip && world.time - lastShootTime > shipReloadTime){
+        //   shoot();
+        // }
+
+        for (let i = 0; i < bulletBodies.length; i++) {
+            const b = bulletBodies[i];
+            // If the bullet is old, delete it
+            if (b.dieTime <= world.time) {
+                bulletBodies.splice(i, 1);
+                world.removeBody(b);
+                i--;
+                continue;
+            }
+        }
+
+        // Remove bodies scheduled to be removed
+        for (let i = 0; i < removeBodies.length; i++) {
+            world.removeBody(removeBodies[i]);
+        }
+        removeBodies.length = 0;
+
+        // Add bodies scheduled to be added
+        for (let i = 0; i < addBodies.length; i++) {
+            world.addBody(addBodies[i]);
+        }
+        addBodies.length = 0;
+
+        // Delete all out of bound bodies
+        // for (var i=0; i < world.bodies.length; i++){
+        //   deleteIfOutOfBounds(world.bodies[i]);
+        // }
+
+        // Get the elapsed time since last frame, in seconds
+        let deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
+        // Make sure the time delta is not too big (can happen if user switches browser tab)
+        deltaTime = Math.min(1 / 10, deltaTime);
+        // Move physics bodies forward in time
+        world.step(fixedDeltaTime, deltaTime, maxSubSteps);
+        
+        this.lastTime = time;
+    }
+
     addBlock(playerId, x, y) {
+        // this.addBodies.push(block)
         // return true; // placed the block
         return false; // failed to place the block
     }
 
     getBlockBodies(){
+        let blockBodies = [];
+        for (let playerValue of Object.entries(this.players)) {
+            blockBodies = blockBodies.concat(playerValue.blockBodies);
+        }
 
+        return blockBodies;
     }
 
     getBulletBodies(){
-
+        return this.bulletBodies;
     }
 
     getPlatformBodies(){
+        const platformBodies = [];
+        for (let playerValue of Object.entries(this.players)) {
+            platformBodies.push(playerValue.platformBody);
+        }
 
+        return platformBodies;
     }
 
 }
