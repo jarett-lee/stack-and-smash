@@ -161,41 +161,39 @@ module.exports = class Engine {
         this.players[playerId].platformBody = platformBody;
     }
 
-    step(time) {
-        const hrTime = process.hrtime();
-        let bullets = bulletBodies.map((bb) => (
+    step() {
+        let bullets = getBulletBodies().map((bb) => (
             {
                 x: bb.position[0],
-                y: bb.position[2],
+                y: bb.position[1],
                 radius: bb.shapes[0].radius,
                 angle: bb.angle
             }
         ));
 
-        let blocks = blockBodies.map((bb) => (
+        let blocks = getBlockBodies().map((bb) => (
             {
                 x: bb.position[0],
-                y: bb.position[2],
+                y: bb.position[1],
                 width: bb.shapes[0].width,
                 height: bb.shapes[0].height,
                 angle: bb.angle
             }
         ));
 
-        let platforms = blockBodies.map((pb) => (
+        let platforms = getBlockBodies().map((pb) => (
             {
                 x: pb.position[0],
-                y: pb.position[2],
+                y: pb.position[1],
                 width: pb.shapes[0].width,
                 height: pb.shapes[0].height,
                 angle: pb.angle
             }
         ));
         
-        // hrTime[0] * 1000 + hrTime[1] / 1000000
+        const hrTime = process.hrtime();
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
-        // this.updatePhysics(milli);
-        this.world.step(time);
+        this.updatePhysics(milli);
         return {
             bullets: bullets,
             blocks: blocks,
@@ -204,11 +202,11 @@ module.exports = class Engine {
     }
 
     updatePhysics(time) {
-        return;
-        
         const lastTime = this.lastTime;
         const maxSubSteps = this.maxSubSteps;
         const fixedDeltaTime = this.fixedDeltaTime;
+        
+        /*
         const world = this.world;
         const bulletBodies = this.bulletBodies;
 
@@ -244,6 +242,7 @@ module.exports = class Engine {
         // for (var i=0; i < world.bodies.length; i++){
         //   deleteIfOutOfBounds(world.bodies[i]);
         // }
+        */
 
         // Get the elapsed time since last frame, in seconds
         let deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
