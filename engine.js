@@ -309,6 +309,7 @@ module.exports = class Engine {
         
         this.players[playerId].blockBodies.push(blockBody);
         this.world.addBody(blockBody);
+        blockBody.playerOne = this.playerOne === playerId;
         
         this.errorMessage = "";
         return true;
