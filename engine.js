@@ -253,16 +253,8 @@ module.exports = class Engine {
         // world.step(fixedDeltaTime, deltaTime, maxSubSteps);
         world.bodies.forEach((body) => {
             if(body.position[1] < -200){
-                world.removeBody(body);
-                console.log("removing block");
-                Object.keys(this.players).forEach((playerKey) => {
-                    let player = this.players[playerKey];
-                    let index = -1;
-                    if((index = player.blockBodies.indexOf(body)) != -1){
-                        player.blockBodies.splice(index, 1);
-                        console.log("Block removed");
-                    }
-                });
+                this.removeBody(body);
+                
             }
         });
 
@@ -270,6 +262,22 @@ module.exports = class Engine {
 
         world.step(fixedDeltaTime);
         this.lastTime = time;
+    }
+
+    removeBody(body){
+        this.world.removeBody(body);
+        Object.keys(this.players).forEach((playerKey) => {
+            let player = this.players[playerKey];
+            let index = -1;
+            if((index = player.blockBodies.indexOf(body)) != -1){
+                player.blockBodies.splice(index, 1);
+                
+            }
+            index = -1;
+            if((index = this.bulletBodies.indexOf(body)) != -1){
+                this.bulletBodies.splice(index, 1);
+            }
+        });
     }
 
     addBlock(playerId, x, y) {
