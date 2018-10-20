@@ -50,6 +50,7 @@ module.exports = class Engine {
         
         this.players[player1].platformBody = platformBody;
         this.players[player1].blockBodies = [];
+        this.players[player1].cannonBodies = [];
         platformBody.playerOne = true;
 
         // Create a platform
@@ -66,6 +67,7 @@ module.exports = class Engine {
 
         this.players[player2].platformBody = platformBody;
         this.players[player2].blockBodies = [];
+        this.players[player2].cannonBodies = [];
         platformBody.playerOne = false;
         
         this.createFakeWorld();
@@ -157,6 +159,17 @@ module.exports = class Engine {
             }
         ));
 
+        let cannons = this.getCannonBodies().map((cb) => (
+            {
+                x: cb.position[0],
+                y: cb.position[1],
+                width: cb.shapes[0].width,
+                height: cb.shapes[0].height,
+                angle: cb.angle,
+                playerOne: cb.playerOne
+            }
+        ));
+
         let platforms = this.getPlatformBodies().map((pb) => (
             {
                 x: pb.position[0],
@@ -171,6 +184,7 @@ module.exports = class Engine {
         return {
             bullets: bullets,
             blocks: blocks,
+            cannons: cannons,
             platforms: platforms,
             time: this.timer.remainingTime
         };
@@ -271,6 +285,53 @@ module.exports = class Engine {
         return true; // failed to place the block
     }
 
+    addCannon(playerId, x, y) {
+        if (this.timer.remainingTime === 0)
+            return false;
+
+        let cannonShape = new p2.Box({
+            width: 30,
+            height: 30
+        });
+        let cannonBody = new p2.Body({
+            position: [x, y],
+            velocity: [0, 0],
+            mass: 150
+        });
+        cannonBody.addShape(cannonShape);
+        this.players[playerId].cannonBodies.push(cannonBody);
+        cannonBody.playerOne = playerId === this.playerOne;
+        let intId = setInterval((cannon, rightFacing) => {
+            let x = cannon.position[0];
+            let y = cannon.position[1];
+            let originY = y + 12;
+            let originX = x;
+            if(!rightFacing){
+                originX-=15;
+            } else{
+                originX+=15;
+            }
+            this.addBullet(rightFacing, originX, originY);
+        }, 1000, cannonBody, cannonBody.playerOne);
+        this.world.addBody(cannonBody);
+        return true; // failed to place the block
+    }
+
+    addBullet(rightFacing, x, y){
+        let bulletShape = new p2.Circle({
+            radius: 3
+        });
+        let v = [500 * (rightFacing ? 1 : -1), 500]
+        let bulletBody = new p2.Body({
+            position: [x,y],
+            velocity: v,
+            mass: 50
+        });
+        bulletBody.addShape(bulletShape);
+        this.bulletBodies.push(bulletBody);
+        this.world.addBody(bulletBody);
+    }
+
     getBlockBodies(){
         let blockBodies = [];
         for (let [ key, val ] of Object.entries(this.players)) {
@@ -278,6 +339,15 @@ module.exports = class Engine {
         }
 
         return blockBodies;
+    }
+
+    getCannonBodies() {
+        let cannonBodies = [];
+        for (let [key, val] of Object.entries(this.players)) {
+            cannonBodies = cannonBodies.concat(val.cannonBodies);
+        }
+
+        return cannonBodies;
     }
 
     getBulletBodies(){

@@ -5,7 +5,7 @@ let ctx = gameCanvas.getContext("2d");
 let canvasWidth = 800;
 let canvasHeight = 400;
 
-let basicBlockImage = new Image(30, 30);
+let basicBlockImage = new Image(30,30);
 basicBlockImage.src = "/img/basic.png";
 let cannonImage = new Image(30,30);
 cannonImage.src = "/img/cannon.png";
@@ -15,21 +15,6 @@ bulletImage.src = "/img/bullet.png";
 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 ctx.translate(canvasWidth / 2, canvasHeight / 2)
 ctx.scale(1, -1);
-
-b = {
-    x: 0,
-    y: 0,
-    height: 30,
-    width: 30,
-    angle: 90
-}
-c = {
-    x: 100,
-    y: 100,
-    height: 30,
-    width: 30,
-    angle: 0
-}
 
 clear();
 let handler = window.requestAnimationFrame(draw);
@@ -45,6 +30,9 @@ function draw(){
     local.blocks.forEach((block) => {
         drawBasicBlock(block);
     });
+    local.cannons.forEach((cannon) => {
+        drawCannon(cannon);
+    })
     local.platforms.forEach((platform) => {
         drawPlatform(platform);
     });
@@ -73,7 +61,10 @@ function drawBasicBlock(block){
 function drawCannon(cannon){
     ctx.save();
     ctx.translate(cannon.x, cannon.y);
-    ctx.rotate(cannon.angle * Math.PI / 180);
+    ctx.rotate(cannon.angle);
+    if (!cannon.playerOne){
+        ctx.scale(-1, 1);
+    }
     ctx.drawImage(cannonImage, 0, 0, 30, 30, -cannon.width / 2, -cannon.height / 2, 30, 30);
     ctx.restore();
 }

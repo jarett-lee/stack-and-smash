@@ -54,7 +54,7 @@ module.exports = (server) => {
 
             let x = data.x;
             let y = data.y;
-            if(!worlds[data.token].addBlock(socket.id, x, y)){
+            if(!worlds[data.token].addCannon(socket.id, x, y)){
                 callback(false);
             }
             callback(true);
