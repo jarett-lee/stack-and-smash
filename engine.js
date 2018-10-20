@@ -166,17 +166,28 @@ module.exports = class Engine {
             }
         ));
 
-        let blocks = this.getBlockBodies().map((bb) => (
-            {
-                x: bb.position[0],
-                y: bb.position[1],
-                width: bb.shapes[0].width,
-                height: bb.shapes[0].height,
-                angle: bb.angle,
-                playerOne: bb.playerOne,
-                blockType: bb.blockType
+        let blocks = this.getBlockBodies().map((bb) => {
+            let width = 0;
+            let height = 0;
+            if(bb.blockType && bb.blockType === "jankBlock"){
+                width = BLOCK_SIZE * 2;
+                height = BLOCK_SIZE * 3;
+            }else {
+                width = bb.shapes[0].width;
+                height == bb.shapes[0].height;
             }
-        ));
+            return(
+                {
+                    x: bb.position[0],
+                    y: bb.position[1],
+                    width: width,
+                    height: height,
+                    angle: bb.angle,
+                    playerOne: bb.playerOne,
+                    blockType: bb.blockType
+                }
+            );
+        });
 
         let cannons = this.getCannonBodies().map((cb) => (
             {
@@ -291,7 +302,7 @@ module.exports = class Engine {
         });
     }
 
-    addBlock(playerId, x, y, blockType) {
+    addBlock(playerId, x, y, blockType, selection) {
         if (this.timer.remainingTime === 0) {
             this.errorMessage = "Game is over";
             return false;
@@ -344,6 +355,12 @@ module.exports = class Engine {
         blockBody.blockType = blockType;
         
         this.errorMessage = "";
+
+        if(selection === "right"){
+            this.players[playerId].rightBlock = this.getRandBlockType();
+        }else {
+            this.players[playerId].leftBlock = this.getRandBlockType();
+        }
         return true;
     }
 
