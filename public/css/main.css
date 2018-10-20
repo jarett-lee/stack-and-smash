@@ -39,6 +39,19 @@ button:hover {
     text-align: center;
 }
 
+.button-group button {
+    margin: 10px auto 0;
+}
+
+.button-group:first-child {
+    margin: 0 auto 0;
+}
+
+.button-cancel {
+    background: lightgrey;
+    color: black;
+}
+
 #title {
     font-size: 40px;
     text-align: center;
@@ -46,10 +59,6 @@ button:hover {
 
 #main-menu-buttons {
     margin-top: 20px;
-}
-
-#main-menu-buttons button {
-    margin: 10px auto 0;
 }
 
 #game-token-input {

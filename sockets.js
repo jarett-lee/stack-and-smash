@@ -6,9 +6,11 @@ module.exports = (server) => {
     let worlds = {};
     io.on('connection', (socket) => {
         socket.on('create-game', () => {
+            console.log("tok");
             let tok = "";
-            while(!((tok = tokengen.generate(4)) in tokens));//Generate that doesn't already exist
+            while(((tok = tokengen.generate(4)) in tokens));//Generate that doesn't already exist
             tokens.push({tok: socket.id});
+            console.log(tok);
             return tok;
         })
 
