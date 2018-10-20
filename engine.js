@@ -192,7 +192,7 @@ module.exports = class Engine {
         
         const hrTime = process.hrtime();
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
-        this.updatePhysics(milli);
+        // this.updatePhysics(milli);
         return {
             bullets: bullets,
             blocks: blocks,
@@ -201,7 +201,6 @@ module.exports = class Engine {
     }
 
     updatePhysics(time) {
-        const world = this.world;
         const lastTime = this.lastTime;
         const maxSubSteps = this.maxSubSteps;
         const fixedDeltaTime = this.fixedDeltaTime;
