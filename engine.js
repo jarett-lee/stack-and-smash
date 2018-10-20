@@ -40,6 +40,7 @@ module.exports = class Engine {
         world.addBody(platformBody);
         
         this.players[player1].platformBody = platformBody;
+        this.players[player1].blockBodies = [];
 
         // Create a platform
         platformShape = new p2.Box({
@@ -54,6 +55,7 @@ module.exports = class Engine {
         world.addBody(platformBody);
 
         this.players[player2].platformBody = platformBody;
+        this.players[player2].blockBodies = [];
         
         this.createFakeWorld();
     }
@@ -61,41 +63,6 @@ module.exports = class Engine {
     createFakeWorld() {
         const world = this.world;
 
-        // Create blocks
-        this.players[Object.keys(this.players)[0]].blockBodies = [];
-        for (let i = 0; i < 5; i++) {
-           let blockShape = new p2.Box({
-                width: 30,
-                height: 30
-            });
-            let blockBody = new p2.Body({
-                angle: Math.random() * 360,
-                position: [-100 + i * 35, 5],
-                mass: 1
-            });
-            blockBody.addShape(blockShape);
-            this.players[Object.keys(this.players)[0]].blockBodies.push(blockBody);
-            world.addBody(blockBody);
-        }
-
-        // Create blocks
-        this.players[Object.keys(this.players)[1]].blockBodies = [];
-        
-        for (let i = 0; i < 5; i++) {
-            let blockShape = new p2.Box({
-                width: 30,
-                height: 30
-            });
-            let blockBody = new p2.Body({
-                angle: Math.random() * 360,
-                position: [-100 + i * 35, 5],
-                mass: 1
-            });
-            blockBody.addShape(blockShape);
-            this.players[Object.keys(this.players)[1]].blockBodies.push(blockBody);
-            world.addBody(blockBody);
-        }
-    
         // Create bullets
         this.bulletBodies = [];
         
@@ -277,7 +244,7 @@ module.exports = class Engine {
             // angle: Math.random() * 360,
             position: [x, y],
             velocity: [0, 0],
-            mass: 10
+            mass: 100
         });
         blockBody.addShape(blockShape);
         this.players[playerId].blockBodies.push(blockBody);
