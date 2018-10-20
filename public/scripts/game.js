@@ -47,13 +47,15 @@ function draw(){
     local.blocks.forEach((block) => {
         drawBasicBlock(block);
     });
-    let fps = Math.round(1000 / (Date.now() - d));
-    fpsCounter.innerHTML = Math.round(1000/(Date.now() - d));
-    d = Date.now();
-    if(fps > 90 || fps < 30){
-        console.warn("reeeeeeeeee", fps);
-        window.cancelAnimationFrame(handler)
-    }
+    local.platforms.forEach((platform) => {
+        drawPlatform(platform);
+    });
+    // let fps = Math.round(1000 / (Date.now() - d));
+    // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d));
+    // d = Date.now();
+    // if(fps > 90 || fps < 30){
+    //     console.warn("Inadequate performance", fps);
+    // }
     window.requestAnimationFrame(draw);
 }
 
@@ -62,7 +64,6 @@ function drawBasicBlock(block){
     ctx.translate(block.x, block.y);
     ctx.rotate(block.angle * Math.PI / 180);
     ctx.fillStyle = "#FFFFFF";
-    // ctx.fillRect(-block.width/2, -block.height/2, 30, 30);
     ctx.drawImage(basicBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
     ctx.restore();
 }
@@ -72,6 +73,15 @@ function drawCannon(cannon){
     ctx.translate(cannon.x, cannon.y);
     ctx.rotate(cannon.angle * Math.PI / 180);
     ctx.drawImage(cannonImage, -cannon.width / 2, -cannon.height / 2, 30, 30);
+    ctx.restore();
+}
+
+function drawPlatform(platform){
+    ctx.save();
+    ctx.translate(platform.x, platform.y);
+    ctx.rotate(platform.angle * Math.PI / 180);
+    ctx.fillstyle = "#bfbfbf";
+    ctx.fillRect(-platform.width/2, -platform.height/2, platform.width, platform.height);
     ctx.restore();
 }
 
