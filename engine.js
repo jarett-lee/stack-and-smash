@@ -167,17 +167,28 @@ module.exports = class Engine {
             }
         ));
 
-        let blocks = this.getBlockBodies().map((bb) => (
-            {
-                x: bb.position[0],
-                y: bb.position[1],
-                width: bb.shapes[0].width,
-                height: bb.shapes[0].height,
-                angle: bb.angle,
-                playerOne: bb.playerOne,
-                blockType: bb.blockType
+        let blocks = this.getBlockBodies().map((bb) => {
+            let width = 0;
+            let height = 0;
+            if(bb.blockType && bb.blockType === "jankBlock"){
+                width = BLOCK_SIZE * 2;
+                height = BLOCK_SIZE * 3;
+            }else {
+                width = bb.shapes[0].width;
+                height == bb.shapes[0].height;
             }
-        ));
+            return(
+                {
+                    x: bb.position[0],
+                    y: bb.position[1],
+                    width: width,
+                    height: height,
+                    angle: bb.angle,
+                    playerOne: bb.playerOne,
+                    blockType: bb.blockType
+                }
+            );
+        });
 
         let cannons = this.getCannonBodies().map((cb) => (
             {
@@ -216,6 +227,9 @@ module.exports = class Engine {
             leftBlock: left,
             rightBlock: right
         };
+
+        const playerOneHeight = this.calcHeight(Object.keys(this.players)[0]);
+        const playerTwoHeight = this.calcHeight(Object.keys(this.players)[1]);
         
         return {
             bullets: bullets,
@@ -226,7 +240,9 @@ module.exports = class Engine {
             remainingTime: this.timer.remainingTime,
             winner: this.winner,
             player1: player1,
-            player2: player2
+            player2: player2,
+            playerOneHeight: playerOneHeight,
+            playerTwoHeight: playerTwoHeight
         };
     }
 
@@ -366,6 +382,12 @@ module.exports = class Engine {
         blockBody.blockType = blockType;
         
         this.errorMessage = "";
+
+        if(selection === "right"){
+            this.players[playerId].rightBlock = this.getRandBlockType();
+        }else {
+            this.players[playerId].leftBlock = this.getRandBlockType();
+        }
         return true;
     }
 
@@ -516,9 +538,10 @@ module.exports = class Engine {
 
     calcHeight (playerId) {
         const blocks = this.players[playerId].blockBodies;
+        const minHeight = -70;
 
         if (blocks.length === 0)
-            return 0;
+            return minHeight;
 
         let maxHeight = blocks[0].position[1] + blocks[0].boundingRadius;
 
@@ -531,6 +554,6 @@ module.exports = class Engine {
         
         maxHeight = maxHeight + 30; // Prevent collision
 
-        return Math.max(Math.min(maxHeight, 400), 0);
+        return Math.max(Math.min(maxHeight, 400), minHeight);
     }
 }

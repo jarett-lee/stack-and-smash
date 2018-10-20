@@ -60,7 +60,7 @@ function draw(){
         drawBullet(bullet);
     });
 
-    drawMenu();
+    drawHeight(local);
     
     remainingTimeDisplay.innerText = s.remainingTime;
 
@@ -84,10 +84,6 @@ function draw(){
     //     console.warn("Inadequate performance", fps);
     // }
     window.requestAnimationFrame(draw);
-}
-
-function drawMenu () {
-
 }
 
 function drawBasicBlock(block){
@@ -148,6 +144,24 @@ function drawBullet(bullet){
 function clear(){
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(-canvasWidth/2, -canvasHeight/2, canvasWidth, canvasHeight);
+}
+
+function drawHeight(state) {
+    ctx.save();
+
+    ctx.strokeStyle="#0000FF";
+    ctx.beginPath();
+    ctx.moveTo(-100, state.playerOneHeight);
+    ctx.lineTo(-500, state.playerOneHeight);
+    ctx.stroke();
+
+    ctx.strokeStyle="#0000FF";
+    ctx.beginPath();
+    ctx.moveTo(100, state.playerTwoHeight);
+    ctx.lineTo(500, state.playerTwoHeight);
+    ctx.stroke();
+
+    ctx.restore();
 }
 
 gameCanvas.addEventListener('click', (event) => {
