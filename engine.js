@@ -44,6 +44,11 @@ module.exports = class Engine {
     
     step() {
         const hrTime = process.hrtime();
+        let bullets = [];
+        let blocks = []; 
+        let platforms = [];
+
+        
         // hrTime[0] * 1000 + hrTime[1] / 1000000
         return {};
     }
