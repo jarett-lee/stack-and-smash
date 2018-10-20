@@ -272,6 +272,10 @@ module.exports = class Engine {
         return blockBody;
     }
 
+    newJankBlock(x, y){
+
+    }
+
     newLBlock(x, y){
         let blockBody = new Body(x, y, 75);
         
