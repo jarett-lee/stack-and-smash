@@ -1,6 +1,7 @@
 const p2  = require('p2');
 
 module.exports = class Engine {
+    
     constructor(player1, player2) {
         this.player = {};
         
@@ -44,11 +45,11 @@ module.exports = class Engine {
     
     step() {
         const hrTime = process.hrtime();
-        let bullets = [];
+        let bullets = bulletBodies.map((bb) => bb);
         let blocks = []; 
         let platforms = [];
 
-        
+
         // hrTime[0] * 1000 + hrTime[1] / 1000000
         return {};
     }
@@ -57,4 +58,17 @@ module.exports = class Engine {
         // return true; // placed the block
         return false; // failed to place the block
     }
+
+    getBlockBodies(){
+
+    }
+
+    getBulletBodies(){
+
+    }
+
+    getPlatformBodies(){
+
+    }
+
 }
