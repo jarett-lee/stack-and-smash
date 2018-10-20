@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3000');
+const socket = io(window.location.href);
 let gameToken;
 let shownScreen = "main-menu";
 // let shownScreen = "game";
