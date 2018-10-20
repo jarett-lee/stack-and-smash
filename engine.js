@@ -258,7 +258,7 @@ module.exports = class Engine {
         if(blockType === "square-block"){
             blockBody = this.newSquareBlock(x, y);
         }else if(blockType === "long-block"){
-            blockBody = newLongBlock(x, y);
+            blockBody = this.newLongBlock(x, y);
         }else if(blockType === "l-block"){
             blockBody = this.newLBlock(x, y);
         }else if(blockType === "jank-block"){
@@ -297,7 +297,7 @@ module.exports = class Engine {
     }
 
     newJankBlock(x, y){
-        let blockBody = newBody(x, y, BLOCK_MASS * 4);
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
 
         blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, 0]);
         blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, BLOCK_SIZE]);
