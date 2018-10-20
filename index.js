@@ -1,13 +1,22 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
+const  server = require('http').createServer(app);
 const port = process.env.port || 3000;
+
+require('./sockets.js')(server, { origins: '*:*' });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => {
+    res.sendFile("/", {root: 'public'});
+});
 
-app.listen(port, () => {
-    console.log("Listening on port", port);
+app.get('/*.*', (req, res) => {
+    res.sendFile(`${req.params[0]}.${req.params[1]}`, { root: 'public' });
 })
+
+server.listen(port, () => {
+    console.log("Listening on port", port);
+});

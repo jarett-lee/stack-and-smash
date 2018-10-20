@@ -5,15 +5,11 @@
     <title>Stack and Smash</title>
 
     <link rel="stylesheet" href="./css/main.css" />
-
-    <script src="./scripts/main.js"></script>
-    <script src="./scripts/interface.js"></script>
-    <script src="./scripts/connector.js"></script>
 </head>
 <body>
     <div id="main-menu" class="center-component">
         <h1 id="title">Stack and Smash</h1>
-
+        
         <div id="main-menu-buttons">
             <button onclick="show('game-id')">Create Game</button>
             <button onclick="show('join-game')">Join Game</button>
@@ -46,4 +42,10 @@
         </canvas>
     </div>
 </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+<script src="./scripts/main.js"></script>
+<script src="./scripts/interface.js"></script>
+<script src="./scripts/connector.js"></script>
+
 </html>
