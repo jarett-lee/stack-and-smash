@@ -38,7 +38,10 @@ function joinGame () {
  * On game state update received from server, update the game UI to reflect object positions
  */
 socket.on('game-state', function () {
-    console.log("hiiiii");
-    // Redraw Game UI
+    if (shownScreen !== "game") {
+        show("game");
+    }
 
+    // Redraw Game UI
+    
 });
