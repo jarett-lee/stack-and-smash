@@ -11,7 +11,7 @@ module.exports = (server) => {
             tokens[tok] = {"playerOne" : socket.id};
             callback(tok);
             socket.join(tok);
-        })
+        });
 
         socket.on('join-game', (token, callback) => {
             if(token in tokens){
