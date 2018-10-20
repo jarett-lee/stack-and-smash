@@ -17,8 +17,8 @@ module.exports = class Engine {
         this.boxes = [];
 
         // Init players
-        initPlayer(player1, -5);
-        initPlayer(player2, 5);
+        this.initPlayer(player1, -5);
+        this.initPlayer(player2, 5);
     }
 
     initPlayer(playerId, x) {
