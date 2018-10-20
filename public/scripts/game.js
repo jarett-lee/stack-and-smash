@@ -19,10 +19,12 @@ const spriteSheet = {
         basicBlock: new Image(30, 30),
     },
     cannon: new Image(30,30),
-    bullet: new Image(6, 6)
+    bullet: new Image(6, 6),
+    fire: new Image()
 };
 spriteSheet.cannon.src = "/img/cannon.png";
 spriteSheet.bullet.src = "/img/bullet.png";
+spriteSheet.fire.src = "/img/ARW-2D-Flame Sprite-Sheet-by-Chromaeleon.png";
 
 spriteSheet.player1.lBlock.src = "/img/player1/lBLock.png";
 spriteSheet.player1.longBlock.src = "/img/player1/long.png";
@@ -61,6 +63,9 @@ function draw(){
     });
 
     drawHeight(local);
+    local.animates.forEach((animate) => {
+        drawAnimate(animate);
+    });
     
     remainingTimeDisplay.innerText = s.remainingTime;
 
@@ -139,6 +144,28 @@ function drawBullet(bullet){
     ctx.fillStyle="#FF0000";
     ctx.drawImage(spriteSheet.bullet, 0, 0, 6, 6, -bullet.radius, -bullet.radius, 6, 6);
     ctx.restore();
+}
+
+const allAnimates = [];
+function drawAnimate(animate){
+    if (!allAnimates[animate.id]) {
+        allAnimates[animate.id] = createAnimate(animate);
+    }
+    const myAnimate = allAnimates[animate.id];
+    myAnimate.update();
+    myAnimate.render(animate.x, animate.y);
+}
+
+function createAnimate(animate) {
+    return sprite({
+        context: ctx,
+        numberOfFrames: 7,
+        loop: true,
+        ticksPerFrame: 10,
+        width: 24,
+        height: 24,
+        image: spriteSheet.fire
+    });
 }
 
 function clear(){
