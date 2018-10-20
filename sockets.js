@@ -30,7 +30,7 @@ module.exports = (server) => {
                     socket.to(tokens[token].playerOne).emit("game-state", gameData);
                     socket.emit('game-state', gameData);
                     //export game data
-                }, 100/6);
+                }, 1000/60);
                 
                 //alert client
                 callback(true);

@@ -1,3 +1,5 @@
+let fpsCounter = document.getElementById("fps");
+
 let gameCanvas = document.getElementById("game-canvas");
 let ctx = gameCanvas.getContext("2d");
 let canvasWidth = 800;
@@ -26,19 +28,33 @@ c = {
     width: 30,
     angle: 0
 }
-clear();
 let s = null;
+
+clear();
+let handler = window.requestAnimationFrame(draw);
+
 socket.on('game-state', (state) => {
     s = state;
-    window.requestAnimationFrame(draw)
 });
-
+let d = Date.now();
 function draw(){
+    if(!s){
+        window.requestAnimationFrame(draw);
+        return;
+    }
     clear();
     let local = s;
     local.blocks.forEach((block) => {
         drawBasicBlock(block);
     });
+    let fps = Math.round(1000 / (Date.now() - d));
+    fpsCounter.innerHTML = Math.round(1000/(Date.now() - d));
+    d = Date.now();
+    if(fps > 90 || fps < 30){
+        console.warn("reeeeeeeeee", fps);
+        window.cancelAnimationFrame(handler)
+    }
+    window.requestAnimationFrame(draw);
 }
 
 function drawBasicBlock(block){

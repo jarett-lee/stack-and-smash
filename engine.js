@@ -23,7 +23,7 @@ module.exports = class Engine {
 
         // Physics properties
         this.maxSubSteps = 5; // Max physics ticks per render frame
-        this.fixedDeltaTime = 1 / 30; // Physics "tick" delta time
+        this.fixedDeltaTime = 1 / 60; // Physics "tick" delta time
 
         /*
         // Init players
@@ -47,100 +47,114 @@ module.exports = class Engine {
         world.defaultContactMaterial.friction = 100;
 
         // Create a platform
-        let platformShape = new p2.Box({
-            width: 5,
-            height: 1
-        });
-        let platformBody = new p2.Body({
-            position: [-5, -1],
-            mass: 0
-        });
-        platformBody.addShape(platformShape);
-        world.addBody(platformBody);
+        // let platformShape = new p2.Box({
+        //     width: 5,
+        //     height: 1
+        // });
+        // let platformBody = new p2.Body({
+        //     position: [-5, -1],
+        //     mass: 0
+        // });
+        // platformBody.addShape(platformShape);
+        // world.addBody(platformBody);
         
-        this.players['p1'].platformBody = platformBody;
+        // this.players['p1'].platformBody = platformBody;
 
-        // Create a platform
-        platformShape = new p2.Box({
-            width: 5,
-            height: 1
-        });
-        platformBody = new p2.Body({
-            position: [5, -1],
-            mass: 0
-        });
-        platformBody.addShape(platformShape);
-        world.addBody(platformBody);
+        // // Create a platform
+        // platformShape = new p2.Box({
+        //     width: 5,
+        //     height: 1
+        // });
+        // platformBody = new p2.Body({
+        //     position: [5, -1],
+        //     mass: 0
+        // });
+        // platformBody.addShape(platformShape);
+        // world.addBody(platformBody);
 
-        this.players['p2'].platformBody = platformBody;
+        // this.players['p2'].platformBody = platformBody;
 
         // Create blocks
         this.players['p1'].blockBodies = [];
         
-        for (let i = 0; i < 5; i++) {
-           let blockShape = new p2.Box({
-                width: 30,
-                height: 30
-            });
-            let blockBody = new p2.Body({
-                angle: Math.random() * 360,
-                position: [-100 + i * 35, 5],
-                mass: .5
-            });
+        let blockShape = new p2.Box({
+            width: 30,
+            height: 30
+        });
+        let blockBody = new p2.Body({
+            // angle: Math.random() * 360,
+            position: [0, 0],
+            velocity: [0, 0],
+            mass: 1
+        });
             blockBody.addShape(blockShape);
             this.players['p1'].blockBodies.push(blockBody);
             world.addBody(blockBody);
-        }
+
+        // for (let i = 0; i < 5; i++) {
+        //    let blockShape = new p2.Box({
+        //         width: 30,
+        //         height: 30
+        //     });
+        //     let blockBody = new p2.Body({
+        //         angle: Math.random() * 360,
+        //         position: [-100 + i * 35, 5],
+        //         mass: 1
+        //     });
+        //     blockBody.addShape(blockShape);
+        //     this.players['p1'].blockBodies.push(blockBody);
+        //     world.addBody(blockBody);
+        // }
 
         // Create blocks
         this.players['p2'].blockBodies = [];
         
-        for (let i = 0; i < 5; i++) {
-            let blockShape = new p2.Box({
-                width: 30,
-                height: 30
-            });
-            let blockBody = new p2.Body({
-                angle: Math.random() * 360,
-                position: [-100 + i * 35, 5],
-                mass: .5
-            });
-            blockBody.addShape(blockShape);
-            this.players['p2'].blockBodies.push(blockBody);
-            world.addBody(blockBody);
-        }
+        // for (let i = 0; i < 5; i++) {
+        //     let blockShape = new p2.Box({
+        //         width: 30,
+        //         height: 30
+        //     });
+        //     let blockBody = new p2.Body({
+        //         angle: Math.random() * 360,
+        //         position: [-100 + i * 35, 5],
+        //         mass: 1
+        //     });
+        //     blockBody.addShape(blockShape);
+        //     this.players['p2'].blockBodies.push(blockBody);
+        //     world.addBody(blockBody);
+        // }
     
         // Create bullets
         this.bulletBodies = [];
         
-        for (let i = 0; i < 5; i++) {
-            let bulletShape = new p2.Circle({
-                radius: .05
-            });
-            let bulletBody = new p2.Body({
-                position: [-4, 1 + i],
-                velocity: [5, 9],
-                mass: .3
-            });
-            bulletBody.addShape(bulletShape);
-            this.bulletBodies.push(bulletBody);
-            world.addBody(bulletBody);
-        }
+        // for (let i = 0; i < 5; i++) {
+        //     let bulletShape = new p2.Circle({
+        //         radius: .05
+        //     });
+        //     let bulletBody = new p2.Body({
+        //         position: [-4, 1 + i],
+        //         velocity: [5, 9],
+        //         mass: .3
+        //     });
+        //     bulletBody.addShape(bulletShape);
+        //     this.bulletBodies.push(bulletBody);
+        //     world.addBody(bulletBody);
+        // }
 
         // Create bullets
-        for (let i = 0; i < 5; i++) {
-            let bulletShape = new p2.Circle({
-                radius: .05
-            });
-            let bulletBody = new p2.Body({
-                position: [4, 1.5 + i],
-                velocity: [-5, 9],
-                mass: .3
-            });
-            bulletBody.addShape(bulletShape);
-            this.bulletBodies.push(bulletBody);
-            world.addBody(bulletBody);
-        }
+        // for (let i = 0; i < 5; i++) {
+        //     let bulletShape = new p2.Circle({
+        //         radius: .05
+        //     });
+        //     let bulletBody = new p2.Body({
+        //         position: [4, 1.5 + i],
+        //         velocity: [-5, 9],
+        //         mass: .3
+        //     });
+        //     bulletBody.addShape(bulletShape);
+        //     this.bulletBodies.push(bulletBody);
+        //     world.addBody(bulletBody);
+        // }
     }
 
     initPlayer(playerId, x) {
@@ -252,8 +266,8 @@ module.exports = class Engine {
         // Make sure the time delta is not too big (can happen if user switches browser tab)
         deltaTime = Math.min(1 / 10, deltaTime);
         // Move physics bodies forward in time
-        world.step(fixedDeltaTime, deltaTime, maxSubSteps);
-        
+        // world.step(fixedDeltaTime, deltaTime, maxSubSteps);
+        world.step(fixedDeltaTime);
         this.lastTime = time;
     }
 
