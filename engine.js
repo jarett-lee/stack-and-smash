@@ -237,8 +237,33 @@ module.exports = class Engine {
         deltaTime = Math.min(1 / 10, deltaTime);
         // Move physics bodies forward in time
         // world.step(fixedDeltaTime, deltaTime, maxSubSteps);
+        world.bodies.forEach((body) => {
+            if(body.position[1] < -200){
+                this.removeBody(body);
+                
+            }
+        });
+
+        
+
         world.step(fixedDeltaTime);
         this.lastTime = time;
+    }
+
+    removeBody(body){
+        this.world.removeBody(body);
+        Object.keys(this.players).forEach((playerKey) => {
+            let player = this.players[playerKey];
+            let index = -1;
+            if((index = player.blockBodies.indexOf(body)) != -1){
+                player.blockBodies.splice(index, 1);
+                
+            }
+            index = -1;
+            if((index = this.bulletBodies.indexOf(body)) != -1){
+                this.bulletBodies.splice(index, 1);
+            }
+        });
     }
 
     addBlock(playerId, x, y) {
