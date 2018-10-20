@@ -6,6 +6,8 @@ const port = process.env.port || 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(express.static('public'))
+
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.listen(port, () => {
