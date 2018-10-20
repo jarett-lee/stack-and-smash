@@ -31,7 +31,8 @@ module.exports = class Engine {
     }
 
     createFakeWorld() {
-        this.players[playerId] = {};
+        this.players['p1'] = {};
+        this.players['p2'] = {};
         
         // Create a World
         const world = new p2.World({
@@ -44,11 +45,11 @@ module.exports = class Engine {
         world.defaultContactMaterial.friction = 100;
 
         // Create a platform
-        platformShape = new p2.Box({
+        let platformShape = new p2.Box({
             width: 5,
             height: 1
         });
-        platformBody = new p2.Body({
+        let platformBody = new p2.Body({
             position: [-5, -1],
             mass: 0
         });
@@ -75,11 +76,11 @@ module.exports = class Engine {
         this.players['p1'].blockBodies = [];
         
         for (let i = 0; i < 5; i++) {
-            blockShape = new p2.Box({
+           let blockShape = new p2.Box({
                 width: .5,
                 height: .5
             });
-            blockBody = new p2.Body({
+            let blockBody = new p2.Body({
                 position: [-5, 5 + i],
                 mass: .5
             });
@@ -92,11 +93,11 @@ module.exports = class Engine {
         this.players['p2'].blockBodies = [];
         
         for (let i = 0; i < 5; i++) {
-            blockShape = new p2.Box({
+            let blockShape = new p2.Box({
                 width: .5,
                 height: .5
             });
-            blockBody = new p2.Body({
+            let blockBody = new p2.Body({
                 position: [5, 5 + i],
                 mass: .5
             });
@@ -105,16 +106,14 @@ module.exports = class Engine {
             world.addBody(blockBody);
         }
     
-        this.blockBodies.push(platformBody);
-        
         // Create bullets
         this.bulletBodies = [];
         
         for (let i = 0; i < 5; i++) {
-            bulletShape = new p2.Circle({
+            let bulletShape = new p2.Circle({
                 radius: .05
             });
-            bulletBody = new p2.Body({
+            let bulletBody = new p2.Body({
                 position: [-4, 1 + i],
                 velocity: [5, 9],
                 mass: .3
@@ -126,10 +125,10 @@ module.exports = class Engine {
 
         // Create bullets
         for (let i = 0; i < 5; i++) {
-            bulletShape = new p2.Circle({
+            let bulletShape = new p2.Circle({
                 radius: .05
             });
-            bulletBody = new p2.Body({
+            let bulletBody = new p2.Body({
                 position: [4, 1.5 + i],
                 velocity: [-5, 9],
                 mass: .3
@@ -162,7 +161,7 @@ module.exports = class Engine {
     }
 
     step() {
-        let bullets = getBulletBodies().map((bb) => (
+        let bullets = this.getBulletBodies().map((bb) => (
             {
                 x: bb.position[0],
                 y: bb.position[1],
@@ -171,7 +170,7 @@ module.exports = class Engine {
             }
         ));
 
-        let blocks = getBlockBodies().map((bb) => (
+        let blocks = this.getBlockBodies().map((bb) => (
             {
                 x: bb.position[0],
                 y: bb.position[1],
@@ -181,7 +180,7 @@ module.exports = class Engine {
             }
         ));
 
-        let platforms = getBlockBodies().map((pb) => (
+        let platforms = this.getBlockBodies().map((pb) => (
             {
                 x: pb.position[0],
                 y: pb.position[1],
@@ -202,12 +201,12 @@ module.exports = class Engine {
     }
 
     updatePhysics(time) {
+        const world = this.world;
         const lastTime = this.lastTime;
         const maxSubSteps = this.maxSubSteps;
         const fixedDeltaTime = this.fixedDeltaTime;
         
         /*
-        const world = this.world;
         const bulletBodies = this.bulletBodies;
 
         // allowShipCollision = true;
@@ -262,8 +261,8 @@ module.exports = class Engine {
 
     getBlockBodies(){
         let blockBodies = [];
-        for (let playerValue of Object.entries(this.players)) {
-            blockBodies = blockBodies.concat(playerValue.blockBodies);
+        for (let [ key, val ] of Object.entries(this.players)) {
+            blockBodies = blockBodies.concat(val.blockBodies);
         }
 
         return blockBodies;
@@ -275,8 +274,8 @@ module.exports = class Engine {
 
     getPlatformBodies(){
         const platformBodies = [];
-        for (let playerValue of Object.entries(this.players)) {
-            platformBodies.push(playerValue.platformBody);
+        for (let [ key, val ] of Object.entries(this.players)) {
+            platformBodies.push(val.platformBody);
         }
 
         return platformBodies;
