@@ -3,7 +3,6 @@ const express = require('express');
 const app = express();
 const  server = require('http').createServer(app);
 const port = process.env.port || 3000;
-
 var tokengen = require('rand-token');
 
 require('./sockets.js')(server, { origins: '*:*' });
