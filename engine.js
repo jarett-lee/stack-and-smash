@@ -5,7 +5,7 @@ module.exports = class Engine {
     constructor(player1, player2) {
         this.players = {};
         
-        createFakeWorld();
+        this.createFakeWorld();
         
         /*
         // Create a World
