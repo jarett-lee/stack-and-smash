@@ -1,4 +1,4 @@
-const p2  = require('p2');
+const p2 = require('p2');
 
 module.exports = class Engine {
 
@@ -161,17 +161,46 @@ module.exports = class Engine {
         this.players[playerId].platformBody = platformBody;
     }
 
-    step() {
+    step(time) {
         const hrTime = process.hrtime();
-        let bullets = bulletBodies.map((bb) => bb);
-        let blocks = []; 
-        let platforms = [];
+        let bullets = bulletBodies.map((bb) => (
+            {
+                x: bb.position[0],
+                y: bb.position[2],
+                radius: bb.shapes[0].radius,
+                angle: bb.angle
+            }
+        ));
 
+        let blocks = blockBodies.map((bb) => (
+            {
+                x: bb.position[0],
+                y: bb.position[2],
+                width: bb.shapes[0].width,
+                height: bb.shapes[0].height,
+                angle: bb.angle
+            }
+        ));
 
+        let platforms = blockBodies.map((pb) => (
+            {
+                x: pb.position[0],
+                y: pb.position[2],
+                width: pb.shapes[0].width,
+                height: pb.shapes[0].height,
+                angle: pb.angle
+            }
+        ));
+        
         // hrTime[0] * 1000 + hrTime[1] / 1000000
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
         // this.updatePhysics(milli);
-        return {};
+        this.world.step(time);
+        return {
+            bullets: bullets,
+            blocks: blocks,
+            platforms: platforms
+        };
     }
 
     updatePhysics(time) {
