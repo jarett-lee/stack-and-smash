@@ -43,5 +43,5 @@ socket.on('game-state', function () {
     }
 
     // Redraw Game UI
-    
+
 });
