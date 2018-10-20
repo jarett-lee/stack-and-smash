@@ -1,7 +1,8 @@
 const p2 = require('p2');
-
+const BLOCK_SIZE = 15;
+const BLOCK_MASS = 25;
 module.exports = class Engine {
-
+    
     constructor(player1, player2) {
         this.timer = {
             start: Date.now(),
@@ -254,10 +255,10 @@ module.exports = class Engine {
         });
     }
 
-    addBlock(playerId, x, y) {
+    addBlock(playerId, x, y, blockType) {
         if (this.timer.remainingTime === 0)
             return false;
-        
+
         if (playerId === this.playerOne) {
             if (x >= 0) {
                 return false;
@@ -278,23 +279,75 @@ module.exports = class Engine {
             return false;
         }
 
-        let blockShape = new p2.Box({
-            width: 30,
-            height: 30
-        });
-        let blockBody = new p2.Body({
-            // angle: Math.random() * 360,
-            position: [x, y],
-            velocity: [0, 0],
-            mass: 100
-        });
-        blockBody.addShape(blockShape);
+        let blockBody = {};
+        if(blockType === "square-block"){
+            blockBody = this.newSquareBlock(x, y);
+        }else if(blockType === "long-block"){
+            blockBody = newLongBlock(x, y);
+        }else if(blockType === "l-block"){
+            blockBody = this.newLBlock(x, y);
+        }else if(blockType === "jank-block"){
+            blockBody = this.newJankBlock(x, y);
+        }else {
+            blockBody = this.newSquareBlock(x, y);
+        }
+        
         this.players[playerId].blockBodies.push(blockBody);
-        blockBody.playerOne = playerId === this.playerOne;
         this.world.addBody(blockBody);
         return true; // failed to place the block
     }
 
+    newBody(x, y, mass){
+        return new p2.Body({
+            position: [x, y],
+            velocity: [0,0],
+            mass: mass
+        })
+    }
+    newSquareBlock(x, y){
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
+        let boxShape = new p2.Box({
+            width: 30,
+            height: 30
+        });
+        blockBody.addShape(boxShape);
+        return blockBody;
+    }
+    newLongBlock(x, y){
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
+        let longShape = new p2.Box({
+            width: 15,
+            height: 60
+        })
+        blockBody.addShape(longShape);
+        return blockBody;
+    }
+
+    newJankBlock(x, y){
+        let blockBody = newBody(x, y, BLOCK_MASS * 4);
+
+        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, 0]);
+        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, BLOCK_SIZE]);
+        blockBody.addShape(this.newBlockShape(), [-BLOCK_SIZE/2, 0]);
+        blockBody.addShape(this.newBlockShape(), [-BLOCK_SIZE/2, -BLOCK_SIZE]);
+        return blockBody;
+    }
+
+    newLBlock(x, y){
+        let blockBody = new Body(x, y, BLOCK_MASS * 3);
+        
+        blockBody.addShape(this.newBlockShape());
+        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE, 0]);
+        blockBody.addShape(this.newBlockShape(), [0, BLOCK_SIZE]);
+    }
+
+
+    newBlockShape(){
+        return new p2.Box({
+            width: BLOCK_SIZE,
+            height: BLOCK_SIZE
+        });
+    }
     getBlockBodies(){
         let blockBodies = [];
         for (let [ key, val ] of Object.entries(this.players)) {
