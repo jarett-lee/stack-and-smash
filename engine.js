@@ -1,17 +1,27 @@
 const p2 = require('p2');
-
+const BLOCK_SIZE = 15;
+const BLOCK_MASS = 25;
 module.exports = class Engine {
-
+    
     constructor(player1, player2) {
+        this.isRunning = true;
+
         this.timer = {
             start: Date.now(),
-            duration: 30
+            duration: 30,
+            running: true
         };
 
         this.players = {};
         this.playerOne = player1;
         this.players[player1] = {};
         this.players[player2] = {};
+
+        this.errorMessage = "";
+
+        this.cooldown = 200;
+        this.players[player1].cooldownDoneTime = 0;
+        this.players[player2].cooldownDoneTime = 0;
         
         // Create a World
         const world = new p2.World({
@@ -109,31 +119,34 @@ module.exports = class Engine {
         }
     }
 
-    initPlayer(playerId, x) {
-        const world = this.world;
+    endGame () {
+        // Wait for blocks to settle and then calc the highest
+        setTimeout(() => {
+            this.isRunning = false;
 
-        // Add platform
-        const platformShape = new p2.Box({
-            width: 3,
-            height: 1
-        });
-        const platformBody = new p2.Body({
-            position: [x, 0],
-            mass: 0
-        });
-        platformBody.addShape(platformShape);
-        world.addBody(platformBody);
+            const playerOneHeight = this.calcHeight(Object.keys(this.players)[0]);
+            const playerTwoHeight = this.calcHeight(Object.keys(this.players)[1]);
 
-        // Write properties
-        this.players[playerId] = {};
-        this.players[playerId].platformShape = platformShape;
-        this.players[playerId].platformBody = platformBody;
+            if (playerOneHeight > playerTwoHeight) {
+                // Player One wins
+                this.winner = 'player1';
+            } else {
+                // Player Two wins
+                this.winner = 'player2';
+            }
+        }, 5000);
     }
 
     step() {
         this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
-        if (this.timer.remainingTime < 0)
+        if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
+
+            if (this.timer.running) {
+                this.timer.running = false;
+                this.endGame();
+            }
+        }
 
         const hrTime = process.hrtime();
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
@@ -155,7 +168,8 @@ module.exports = class Engine {
                 width: bb.shapes[0].width,
                 height: bb.shapes[0].height,
                 angle: bb.angle,
-                playerOne: bb.playerOne
+                playerOne: bb.playerOne,
+                blockType: bb.blockType
             }
         ));
 
@@ -186,7 +200,9 @@ module.exports = class Engine {
             blocks: blocks,
             cannons: cannons,
             platforms: platforms,
-            time: this.timer.remainingTime
+            errorMessage: this.errorMessage,
+            remainingTime: this.timer.remainingTime,
+            winner: this.winner
         };
     }
 
@@ -234,7 +250,7 @@ module.exports = class Engine {
                 this.removeBody(body);
             }
         });
-        
+
         // Get the elapsed time since last frame, in seconds
         let deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
 
@@ -242,7 +258,7 @@ module.exports = class Engine {
         deltaTime = Math.min(1 / 10, deltaTime);
 
         // Move physics bodies forward in time
-        if (this.timer.remainingTime > 0)
+        if (this.isRunning)
             world.step(fixedDeltaTime, deltaTime, maxSubSteps);
 
         this.lastTime = time;
@@ -264,25 +280,81 @@ module.exports = class Engine {
         });
     }
 
-    addBlock(playerId, x, y) {
-        if (this.timer.remainingTime === 0)
+    addBlock(playerId, x, y, blockType) {
+        if (this.timer.remainingTime === 0) {
+            this.errorMessage = "Game is over";
             return false;
+        }
 
-        let blockShape = new p2.Box({
+        if (playerId === this.playerOne) {
+            if (x >= 0) {
+                this.errorMessage = "Place on the other side of the screen";
+                return false;
+            }
+        }
+        else {
+            if (x <= 0) {
+                this.errorMessage = "Place on the other side of the screen";
+                return false;
+            }
+        }
+
+        const hrTime = process.hrtime();
+        const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
+        if (this.players[playerId].cooldownDoneTime <= milli) {
+            this.players[playerId].cooldownDoneTime = milli + this.cooldown;
+        }
+        else {
+            this.errorMessage = "Placing is on cooldown";
+            return false;
+        }
+
+        let blockBody = {};
+        if(blockType === "basicBlock"){
+            blockBody = this.newSquareBlock(x, y);
+        }else if(blockType === "longBlock"){
+            blockBody = this.newLongBlock(x, y);
+        }else if(blockType === "lBlock"){
+            blockBody = this.newLBlock(x, y);
+        }else if(blockType === "jankBlock"){
+            blockBody = this.newJankBlock(x, y);
+        }else {
+            blockBody = this.newSquareBlock(x, y);
+        }
+        
+        this.players[playerId].blockBodies.push(blockBody);
+        this.world.addBody(blockBody);
+        blockBody.playerOne = this.playerOne === playerId;
+        blockBody.blockType = blockType;
+        
+        this.errorMessage = "";
+        return true;
+    }
+
+    newBody(x, y, mass){
+        return new p2.Body({
+            position: [x, y],
+            velocity: [0,0],
+            mass: mass
+        })
+    }
+    newSquareBlock(x, y){
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
+        let boxShape = new p2.Box({
             width: 30,
             height: 30
         });
-        let blockBody = new p2.Body({
-            // angle: Math.random() * 360,
-            position: [x, y],
-            velocity: [0, 0],
-            mass: 100
-        });
-        blockBody.addShape(blockShape);
-        this.players[playerId].blockBodies.push(blockBody);
-        blockBody.playerOne = playerId === this.playerOne;
-        this.world.addBody(blockBody);
-        return true; // failed to place the block
+        blockBody.addShape(boxShape);
+        return blockBody;
+    }
+    newLongBlock(x, y){
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
+        let longShape = new p2.Box({
+            width: 15,
+            height: 60
+        })
+        blockBody.addShape(longShape);
+        return blockBody;
     }
 
     addCannon(playerId, x, y) {
@@ -332,6 +404,32 @@ module.exports = class Engine {
         this.world.addBody(bulletBody);
     }
 
+    newJankBlock(x, y){
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
+
+        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, 0]);
+        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, BLOCK_SIZE]);
+        blockBody.addShape(this.newBlockShape(), [-BLOCK_SIZE/2, 0]);
+        blockBody.addShape(this.newBlockShape(), [-BLOCK_SIZE/2, -BLOCK_SIZE]);
+        return blockBody;
+    }
+
+    newLBlock(x, y){
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 3);
+        
+        blockBody.addShape(this.newBlockShape());
+        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE, 0]);
+        blockBody.addShape(this.newBlockShape(), [0, BLOCK_SIZE]);
+        return blockBody;
+    }
+
+
+    newBlockShape(){
+        return new p2.Box({
+            width: BLOCK_SIZE,
+            height: BLOCK_SIZE
+        });
+    }
     getBlockBodies(){
         let blockBodies = [];
         for (let [ key, val ] of Object.entries(this.players)) {
@@ -363,4 +461,19 @@ module.exports = class Engine {
         return platformBodies;
     }
 
+    calcHeight (playerId) {
+        const blocks = this.players[playerId].blockBodies;
+
+        if (blocks.length === 0)
+            return 0;
+
+        let height = blocks[0].position[1];
+
+        for (let i = 0; i < blocks.length; i++) {
+            if (blocks[i].position[1] > height)
+                height = blocks[i].position[1];
+        }
+
+        return height + 400;
+    }
 }

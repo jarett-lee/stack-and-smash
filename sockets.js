@@ -33,7 +33,9 @@ module.exports = (server) => {
                 setInterval(() => {
                     //step game
                     let gameData = worlds[token].step();
+                    gameData.playerOne = true;
                     socket.to(tokens[token].playerOne).emit("game-state", gameData);
+                    gameData.playerOne = false;
                     socket.emit('game-state', gameData);
                     //export game data
                 }, 1000/60);
@@ -54,7 +56,7 @@ module.exports = (server) => {
 
             let x = data.x;
             let y = data.y;
-            if(!worlds[data.token].addCannon(socket.id, x, y)){
+            if(!worlds[data.token].addBlock(socket.id, x, y, "lBlock")){
                 callback(false);
             }
             callback(true);

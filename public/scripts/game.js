@@ -1,16 +1,36 @@
 let fpsCounter = document.getElementById("fps");
+let remainingTimeDisplay = document.getElementById("remainingTime");
+let errorDisplay = document.getElementById("error");
 
 let gameCanvas = document.getElementById("game-canvas");
 let ctx = gameCanvas.getContext("2d");
 let canvasWidth = 800;
 let canvasHeight = 400;
 
-let basicBlockImage = new Image(30,30);
-basicBlockImage.src = "/img/basic.png";
-let cannonImage = new Image(30,30);
-cannonImage.src = "/img/cannon.png";
-let bulletImage = new Image(6, 6);
-bulletImage.src = "/img/bullet.png";
+const spriteSheet = {
+    player1: {
+        lBlock: new Image(30, 30),
+        longBlock: new Image(15, 60),
+        basicBlock: new Image(30, 30)
+    },
+    player2: {
+        lBlock: new Image(30, 30),
+        longBlock: new Image(15, 60),
+        basicBlock: new Image(30, 30),
+    },
+    cannon: new Image(30,30),
+    bullet: new Image(6, 6)
+};
+spriteSheet.cannon.src = "/img/cannon.png";
+spriteSheet.bullet.src = "/img/bullet.png";
+
+spriteSheet.player1.lBlock.src = "/img/player1/lBLock.png";
+spriteSheet.player1.longBlock.src = "/img/player1/long.png";
+spriteSheet.player1.basicBlock.src = "/img/player1/basic.png";
+
+spriteSheet.player2.lBlock.src = "/img/player2/lBLock.png";
+spriteSheet.player2.longBlock.src = "/img/player2/long.png";
+spriteSheet.player2.basicBlock.src = "/img/player2/basic.png";
 
 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 ctx.translate(canvasWidth / 2, canvasHeight / 2)
@@ -39,6 +59,10 @@ function draw(){
     local.bullets.forEach((bullet) => {
         drawBullet(bullet);
     });
+    
+    remainingTimeDisplay.innerText = s.remainingTime;
+
+    errorDisplay.innerText = s.errorMessage;
 
     // let fps = Math.round(1000 / (Date.now() - d));
     // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d)) + " " + s.time;
@@ -54,7 +78,16 @@ function drawBasicBlock(block){
     ctx.translate(block.x, block.y);
     ctx.rotate(block.angle);
     ctx.fillStyle = "#FFFFFF";
-    ctx.drawImage(basicBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
+    //ctx.drawImage(basicBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
+    //ctx.drawImage(longBlockImage, 0, 0, 15, 60, -block.width/2, -block.height/2, 15, 60);
+
+    let sprite;
+    if (block.playerOne)
+        sprite = spriteSheet.player1[block.blockType];
+    else
+        sprite = spriteSheet.player2[block.blockType];
+
+    ctx.drawImage(sprite, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
     ctx.restore();
 }
 
@@ -65,7 +98,7 @@ function drawCannon(cannon){
     if (!cannon.playerOne){
         ctx.scale(-1, 1);
     }
-    ctx.drawImage(cannonImage, 0, 0, 30, 30, -cannon.width / 2, -cannon.height / 2, 30, 30);
+    ctx.drawImage(spriteSheet.cannon, 0, 0, 30, 30, -cannon.width / 2, -cannon.height / 2, 30, 30);
     ctx.restore();
 }
 
@@ -82,12 +115,12 @@ function drawBullet(bullet){
     ctx.save();
     ctx.translate(bullet.x, bullet.y);
     ctx.fillStyle="#FF0000";
-    ctx.drawImage(bulletImage, 0, 0, 6, 6, -bullet.radius, -bullet.radius, 6, 6);
+    ctx.drawImage(spriteSheet.bullet, 0, 0, 6, 6, -bullet.radius, -bullet.radius, 6, 6);
     ctx.restore();
 }
 
 function clear(){
-    ctx.fillStyle = "#7aadff";
+    ctx.fillStyle = "#ffffff";
     ctx.fillRect(-canvasWidth/2, -canvasHeight/2, canvasWidth, canvasHeight);
 }
 
