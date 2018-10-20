@@ -166,7 +166,8 @@ module.exports = class Engine {
                 width: bb.shapes[0].width,
                 height: bb.shapes[0].height,
                 angle: bb.angle,
-                playerOne: bb.playerOne
+                playerOne: bb.playerOne,
+                blockType: bb.blockType
             }
         ));
 
@@ -295,13 +296,13 @@ module.exports = class Engine {
         }
 
         let blockBody = {};
-        if(blockType === "square-block"){
+        if(blockType === "basicBlock"){
             blockBody = this.newSquareBlock(x, y);
-        }else if(blockType === "long-block"){
+        }else if(blockType === "longBlock"){
             blockBody = this.newLongBlock(x, y);
-        }else if(blockType === "l-block"){
+        }else if(blockType === "lBlock"){
             blockBody = this.newLBlock(x, y);
-        }else if(blockType === "jank-block"){
+        }else if(blockType === "jankBlock"){
             blockBody = this.newJankBlock(x, y);
         }else {
             blockBody = this.newSquareBlock(x, y);
@@ -310,6 +311,7 @@ module.exports = class Engine {
         this.players[playerId].blockBodies.push(blockBody);
         this.world.addBody(blockBody);
         blockBody.playerOne = this.playerOne === playerId;
+        blockBody.blockType = blockType;
         
         this.errorMessage = "";
         return true;

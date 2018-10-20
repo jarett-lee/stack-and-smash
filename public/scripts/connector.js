@@ -54,4 +54,6 @@ socket.on('game-state', function (state) {
     }
 
     s = state;
+
+    console.log(state);
 });
