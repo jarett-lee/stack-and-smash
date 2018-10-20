@@ -55,7 +55,7 @@ function draw(){
 function drawBasicBlock(block){
     ctx.save();
     ctx.translate(block.x, block.y);
-    ctx.rotate(block.angle * Math.PI / 180);
+    ctx.rotate(block.angle);
     ctx.fillStyle = "#FFFFFF";
     // ctx.fillRect(-block.width/2, -block.height/2, 30, 30);
     ctx.drawImage(basicBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
@@ -79,8 +79,6 @@ gameCanvas.addEventListener('click', () => {
     const rect = gameCanvas.getBoundingClientRect();
     const x = event.clientX - rect.left - 400;
     const y = (event.clientY - rect.top - 200) * -1;
-
-    console.log(x, y);
 
     socket.emit('create-block', {
         token: gameToken,
