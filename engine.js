@@ -4,37 +4,8 @@ module.exports = class Engine {
 
     constructor(player1, player2) {
         this.players = {};
-        
-        this.createFakeWorld();
-        
-        /*
-        // Create a World
-        const world = new p2.World({
-            gravity: [0, -10]
-        });
-
-        // Set high friction so the wheels don't slip
-        world.defaultContactMaterial.friction = 100;
-        
-        // Write properties
-        this.world = world;
-        this.bullets = [];
-        */
-
-        // Physics properties
-        this.maxSubSteps = 5; // Max physics ticks per render frame
-        this.fixedDeltaTime = 1 / 60; // Physics "tick" delta time
-
-        /*
-        // Init players
-        this.initPlayer(player1, -5);
-        this.initPlayer(player2, 5);
-        */
-    }
-
-    createFakeWorld() {
-        this.players['p1'] = {};
-        this.players['p2'] = {};
+        this.players[player1] = {};
+        this.players[player2] = {};
         
         // Create a World
         const world = new p2.World({
@@ -46,37 +17,52 @@ module.exports = class Engine {
         // Set high friction so the wheels don't slip
         world.defaultContactMaterial.friction = 100;
 
+        // Physics properties
+        this.maxSubSteps = 5; // Max physics ticks per render frame
+        this.fixedDeltaTime = 1 / 60; // Physics "tick" delta time
+
+        /*
+        // Init players
+        this.initPlayer(player1, -5);
+        this.initPlayer(player2, 5);
+        */
+
         // Create a platform
-        // let platformShape = new p2.Box({
-        //     width: 5,
-        //     height: 1
-        // });
-        // let platformBody = new p2.Body({
-        //     position: [-5, -1],
-        //     mass: 0
-        // });
-        // platformBody.addShape(platformShape);
-        // world.addBody(platformBody);
+        let platformShape = new p2.Box({
+            width: 50,
+            height: 5
+        });
+        let platformBody = new p2.Body({
+            position: [-100, -50],
+            mass: 0
+        });
+        platformBody.addShape(platformShape);
+        world.addBody(platformBody);
         
-        // this.players['p1'].platformBody = platformBody;
+        this.players[player1].platformBody = platformBody;
 
-        // // Create a platform
-        // platformShape = new p2.Box({
-        //     width: 5,
-        //     height: 1
-        // });
-        // platformBody = new p2.Body({
-        //     position: [5, -1],
-        //     mass: 0
-        // });
-        // platformBody.addShape(platformShape);
-        // world.addBody(platformBody);
+        // Create a platform
+        platformShape = new p2.Box({
+            width: 50,
+            height: 5
+        });
+        platformBody = new p2.Body({
+            position: [100, -50],
+            mass: 0
+        });
+        platformBody.addShape(platformShape);
+        world.addBody(platformBody);
 
-        // this.players['p2'].platformBody = platformBody;
+        this.players[player2].platformBody = platformBody;
+        
+        this.createFakeWorld();
+    }
+
+    createFakeWorld() {
+        const world = this.world;
 
         // Create blocks
-        this.players['p1'].blockBodies = [];
-        
+        this.players[Object.keys(this.players)[0]].blockBodies = [];
         for (let i = 0; i < 5; i++) {
            let blockShape = new p2.Box({
                 width: 30,
@@ -88,12 +74,12 @@ module.exports = class Engine {
                 mass: 1
             });
             blockBody.addShape(blockShape);
-            this.players['p1'].blockBodies.push(blockBody);
+            this.players[Object.keys(this.players)[0]].blockBodies.push(blockBody);
             world.addBody(blockBody);
         }
 
         // Create blocks
-        this.players['p2'].blockBodies = [];
+        this.players[Object.keys(this.players)[1]].blockBodies = [];
         
         for (let i = 0; i < 5; i++) {
             let blockShape = new p2.Box({
@@ -106,7 +92,7 @@ module.exports = class Engine {
                 mass: 1
             });
             blockBody.addShape(blockShape);
-            this.players['p2'].blockBodies.push(blockBody);
+            this.players[Object.keys(this.players)[1]].blockBodies.push(blockBody);
             world.addBody(blockBody);
         }
     
@@ -184,7 +170,7 @@ module.exports = class Engine {
             }
         ));
 
-        let platforms = this.getBlockBodies().map((pb) => (
+        let platforms = this.getPlatformBodies().map((pb) => (
             {
                 x: pb.position[0],
                 y: pb.position[1],
@@ -258,9 +244,20 @@ module.exports = class Engine {
     }
 
     addBlock(playerId, x, y) {
-        // this.addBodies.push(block)
-        // return true; // placed the block
-        return false; // failed to place the block
+        let blockShape = new p2.Box({
+            width: 30,
+            height: 30
+        });
+        let blockBody = new p2.Body({
+            // angle: Math.random() * 360,
+            position: [x, y],
+            velocity: [0, 0],
+            mass: 10
+        });
+        blockBody.addShape(blockShape);
+        this.players[playerId].blockBodies.push(blockBody);
+        this.world.addBody(blockBody);
+        return true; // failed to place the block
     }
 
     getBlockBodies(){
