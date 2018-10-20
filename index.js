@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
 function runWorld(){
     
     world.step(1/60);
-    io
+    
 }
 
 app.listen(port, () => {
