@@ -71,8 +71,8 @@ module.exports = class Engine {
                 radius: 3
             });
             let bulletBody = new p2.Body({
-                position: [-4, 1 + i],
-                velocity: [5, 9],
+                position: [-100, 10 + 20*i],
+                velocity: [500, 100],
                 mass: .3
             });
             bulletBody.addShape(bulletShape);
@@ -86,8 +86,8 @@ module.exports = class Engine {
                 radius: 3
             });
             let bulletBody = new p2.Body({
-                position: [20, 20],
-                velocity: [0, 0],
+                position: [100, 20*i],
+                velocity: [-500, 100],
                 mass: .3
             });
             bulletBody.addShape(bulletShape);
