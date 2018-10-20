@@ -194,19 +194,9 @@ module.exports = class Engine {
             world.addBody(addBodies[i]);
         }
         addBodies.length = 0;
-
-        // Delete all out of bound bodies
-        // for (var i=0; i < world.bodies.length; i++){
-        //   deleteIfOutOfBounds(world.bodies[i]);
-        // }
         */
 
-        // Get the elapsed time since last frame, in seconds
-        let deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
-        // Make sure the time delta is not too big (can happen if user switches browser tab)
-        deltaTime = Math.min(1 / 10, deltaTime);
-        // Move physics bodies forward in time
-        // world.step(fixedDeltaTime, deltaTime, maxSubSteps);
+        // Delete all out of bound bodies
         world.bodies.forEach((body) => {
             if(body.position[1] < -200){
                 this.removeBody(body);
@@ -214,9 +204,12 @@ module.exports = class Engine {
             }
         });
 
-        
-
-        world.step(fixedDeltaTime);
+        // Get the elapsed time since last frame, in seconds
+        let deltaTime = lastTime ? (time - lastTime) / 1000 : 0;
+        // Make sure the time delta is not too big (can happen if user switches browser tab)
+        deltaTime = Math.min(1 / 10, deltaTime);
+        // Move physics bodies forward in time
+        world.step(fixedDeltaTime, deltaTime, maxSubSteps);
         this.lastTime = time;
     }
 
