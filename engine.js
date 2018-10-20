@@ -135,27 +135,6 @@ module.exports = class Engine {
         }, 5000);
     }
 
-    initPlayer(playerId, x) {
-        const world = this.world;
-
-        // Add platform
-        const platformShape = new p2.Box({
-            width: 3,
-            height: 1
-        });
-        const platformBody = new p2.Body({
-            position: [x, 0],
-            mass: 0
-        });
-        platformBody.addShape(platformShape);
-        world.addBody(platformBody);
-
-        // Write properties
-        this.players[playerId] = {};
-        this.players[playerId].platformShape = platformShape;
-        this.players[playerId].platformBody = platformBody;
-    }
-
     step() {
         this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
         if (this.timer.remainingTime < 0) {
