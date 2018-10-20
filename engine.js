@@ -307,11 +307,12 @@ module.exports = class Engine {
     }
 
     newLBlock(x, y){
-        let blockBody = new Body(x, y, BLOCK_MASS * 3);
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 3);
         
         blockBody.addShape(this.newBlockShape());
         blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE, 0]);
         blockBody.addShape(this.newBlockShape(), [0, BLOCK_SIZE]);
+        return blockBody;
     }
 
 

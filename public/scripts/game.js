@@ -5,7 +5,10 @@ let ctx = gameCanvas.getContext("2d");
 let canvasWidth = 800;
 let canvasHeight = 400;
 
-let longBlockImage = new Image(15, 60);
+
+let lBlockImage = new Image(30,30);
+lBlockImage.src = "/img/lBLock.png";
+let longBlockImage = new Image(15, 60)
 longBlockImage.src = "/img/long.png";
 let basicBlockImage = new Image(30, 30);
 basicBlockImage.src = "/img/basic.png";
@@ -69,7 +72,8 @@ function drawBasicBlock(block){
     ctx.rotate(block.angle);
     ctx.fillStyle = "#FFFFFF";
     //ctx.drawImage(basicBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
-    ctx.drawImage(longBlockImage, 0, 0, 15, 60, -block.width/2, -block.height/2, 15, 60);
+    //ctx.drawImage(longBlockImage, 0, 0, 15, 60, -block.width/2, -block.height/2, 15, 60);
+    ctx.drawImage(lBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
     ctx.restore();
 }
 
