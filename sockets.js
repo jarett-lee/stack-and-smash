@@ -1,7 +1,7 @@
 module.exports = (server) => {
     const io = require('socket.io')(server);
     let tokengen = require('rand-token');
-    require('./engine');
+    const Engine = require('./engine.js');
     let tokens = {};
     let worlds = {};
     io.on('connection', (socket) => {
@@ -17,8 +17,7 @@ module.exports = (server) => {
             if(token in tokens){
                 //Join Room
                 socket.join(token);
-                tokens[tok].playerTwo = socket.id;
-                
+                tokens[token].playerTwo = socket.id;
                 //create World
                 let playerOne = tokens[token].playerOne;
                 let playerTwo = socket.id;
@@ -26,12 +25,14 @@ module.exports = (server) => {
 
                 //Start game cycle
                 setInterval(() => {
-                    worlds[token].step();//step game
+                    //step game
+                    socket.emit('game-state', worlds[token].step());
                     //export game data
                 }, 100/6);
-
+                
                 //alert client
                 callback(true);
+                
             } else {
                 callback(false);
             }
@@ -40,7 +41,6 @@ module.exports = (server) => {
         socket.on('create-block', (data, callback) => {
             if(!data.token || !(data.token in tokens)){
                 callback(false);
-
                 return;
             }
 
