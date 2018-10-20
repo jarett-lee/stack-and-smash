@@ -59,10 +59,23 @@ function draw(){
     local.bullets.forEach((bullet) => {
         drawBullet(bullet);
     });
+
+    drawMenu();
     
     remainingTimeDisplay.innerText = s.remainingTime;
 
     errorDisplay.innerText = s.errorMessage;
+
+    const playerSprite = spriteSheet[player];
+    if (s[player].leftBlock.type !== "cannon")
+        document.getElementById("left-image").src = playerSprite[s[player].leftBlock.type].src;
+    else
+        document.getElementById("left-image").src = spriteSheet.cannon.src;
+
+    if (s[player].rightBlock.type !== "cannon")
+        document.getElementById("right-image").src = playerSprite[s[player].rightBlock.type].src;
+    else
+        document.getElementById("right-image").src = spriteSheet.cannon.src;
 
     // let fps = Math.round(1000 / (Date.now() - d));
     // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d)) + " " + s.time;
@@ -73,13 +86,15 @@ function draw(){
     window.requestAnimationFrame(draw);
 }
 
+function drawMenu () {
+
+}
+
 function drawBasicBlock(block){
     ctx.save();
     ctx.translate(block.x, block.y);
     ctx.rotate(block.angle);
     ctx.fillStyle = "#FFFFFF";
-    //ctx.drawImage(basicBlockImage, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
-    //ctx.drawImage(longBlockImage, 0, 0, 15, 60, -block.width/2, -block.height/2, 15, 60);
 
     let sprite;
     if (block.playerOne)
@@ -87,7 +102,18 @@ function drawBasicBlock(block){
     else
         sprite = spriteSheet.player2[block.blockType];
 
-    ctx.drawImage(sprite, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
+    switch (block.blockType) {
+        case "lBlock":
+            ctx.drawImage(sprite, 0, 0, 30, 30, -block.width / 2, -block.height / 2, 30, 30);
+            break;
+        case "basicBlock":
+            ctx.drawImage(sprite, 0, 0, 30, 30, -block.width/2, -block.height/2, 30, 30);
+            break;
+        case "longBlock":
+            ctx.drawImage(sprite, 0, 0, 15, 60, -block.width/2, -block.height/2, 15, 60);
+            break;
+    }
+
     ctx.restore();
 }
 
@@ -132,8 +158,25 @@ gameCanvas.addEventListener('click', (event) => {
     socket.emit('create-block', {
         token: gameToken,
         x: x,
-        y: y
+        y: y,
+        selection: "left"
     }, (success) => {
-        console.log(success);
-    })
+    });
 });
+
+gameCanvas.addEventListener('contextmenu', function(ev) {
+    ev.preventDefault();
+    const rect = gameCanvas.getBoundingClientRect();
+    const x = event.clientX - rect.left - 400;
+    const y = (event.clientY - rect.top - 200) * -1;
+
+    socket.emit('create-block', {
+        token: gameToken,
+        x: x,
+        y: y,
+        selection: "right"
+    }, (success) => {
+    });
+
+    return false;
+}, false);
