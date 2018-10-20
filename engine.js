@@ -19,11 +19,13 @@ module.exports = class Engine {
         // Write properties
         this.world = world;
         this.bullets = [];
+        */
 
         // Physics properties
         this.maxSubSteps = 5; // Max physics ticks per render frame
         this.fixedDeltaTime = 1 / 30; // Physics "tick" delta time
 
+        /*
         // Init players
         this.initPlayer(player1, -5);
         this.initPlayer(player2, 5);
@@ -192,7 +194,7 @@ module.exports = class Engine {
         
         const hrTime = process.hrtime();
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
-        // this.updatePhysics(milli);
+        this.updatePhysics(milli);
         return {
             bullets: bullets,
             blocks: blocks,
@@ -201,6 +203,7 @@ module.exports = class Engine {
     }
 
     updatePhysics(time) {
+        const world = this.world;
         const lastTime = this.lastTime;
         const maxSubSteps = this.maxSubSteps;
         const fixedDeltaTime = this.fixedDeltaTime;
