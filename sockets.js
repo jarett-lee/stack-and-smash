@@ -5,15 +5,15 @@ module.exports = (server) => {
     let tokens = {};
     let worlds = {};
     io.on('connection', (socket) => {
-        socket.on('create-game', () => {
+        socket.on('create-game', (callback) => {
             let tok = "";
             while(((tok = tokengen.generate(4)) in tokens));//Generate token that doesn't already exist
             tokens[tok] = {"playerOne" : socket.id};
-            socket.emit("token", tok);
+            callback(tok);
             socket.join(tok);
         })
 
-        socket.on('join-game', (token) => {
+        socket.on('join-game', (token, callback) => {
             if(token in tokens){
                 //Join Room
                 socket.join(token);
@@ -31,23 +31,25 @@ module.exports = (server) => {
                 }, 100/6);
 
                 //alert client
-                socket.emit('alert', 'game starting');
+                callback(true);
             } else {
-                socket.emit('alert', 'invalid token');
+                callback(false);
             }
         })
 
-        socket.on('create-block', (data) => {
+        socket.on('create-block', (data, callback) => {
             if(!data.token || !(data.token in tokens)){
-                socket.emit('alert', 'invalid token');
+                callback(false);
+
                 return;
             }
 
             let x = data.x;
             let y = data.y;
             if(!worlds[token].addBlock(socket.id, x, y)){
-                socket.emit('alert', 'invalid block placement');
+                callback(false);
             }
+            callback(true);
         })
 
         
