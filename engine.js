@@ -16,7 +16,9 @@ module.exports = class Engine {
         this.playerOne = player1;
         this.players[player1] = {};
         this.players[player2] = {};
-        
+
+        this.errorMessage = "";
+
         this.cooldown = 200;
         this.players[player1].cooldownDoneTime = 0;
         this.players[player2].cooldownDoneTime = 0;
@@ -204,6 +206,7 @@ module.exports = class Engine {
             bullets: bullets,
             blocks: blocks,
             platforms: platforms,
+            errorMessage: this.errorMessage,
             remainingTime: this.timer.remainingTime,
             winner: this.winner
         };
@@ -284,16 +287,20 @@ module.exports = class Engine {
     }
 
     addBlock(playerId, x, y, blockType) {
-        if (this.timer.remainingTime === 0)
+        if (this.timer.remainingTime === 0) {
+            this.errorMessage = "Game is over";
             return false;
+        }
 
         if (playerId === this.playerOne) {
             if (x >= 0) {
+                this.errorMessage = "Place on the other side of the screen";
                 return false;
             }
         }
         else {
             if (x <= 0) {
+                this.errorMessage = "Place on the other side of the screen";
                 return false;
             }
         }
@@ -304,6 +311,7 @@ module.exports = class Engine {
             this.players[playerId].cooldownDoneTime = milli + this.cooldown;
         }
         else {
+            this.errorMessage = "Placing is on cooldown";
             return false;
         }
 
@@ -322,7 +330,9 @@ module.exports = class Engine {
         
         this.players[playerId].blockBodies.push(blockBody);
         this.world.addBody(blockBody);
-        return true; // failed to place the block
+        
+        this.errorMessage = "";
+        return true;
     }
 
     newBody(x, y, mass){
