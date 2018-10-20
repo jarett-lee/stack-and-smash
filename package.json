@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jarett-lee/stack-and-smash/issues"
   },
-  "homepage": "https://github.com/jarett-lee/stack-and-smash#readme"
+  "homepage": "https://github.com/jarett-lee/stack-and-smash#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
 }
