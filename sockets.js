@@ -47,14 +47,14 @@ module.exports = (server) => {
         });
 
         socket.on('create-block', (data, callback) => {
-            if(!data.token || !(data.token in tokens)){
+            if(!data.token || !(data.token in tokens) || !worlds[data.token]){
                 callback(false);
                 return;
             }
 
             let x = data.x;
             let y = data.y;
-            if(!worlds[token].addBlock(socket.id, x, y)){
+            if(!worlds[data.token].addBlock(socket.id, x, y)){
                 callback(false);
             }
             callback(true);

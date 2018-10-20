@@ -4,6 +4,8 @@ module.exports = class Engine {
 
     constructor(player1, player2) {
         this.players = {};
+        this.players[player1] = {};
+        this.players[player2] = {};
         
         this.createFakeWorld();
         
@@ -33,12 +35,9 @@ module.exports = class Engine {
     }
 
     createFakeWorld() {
-        this.players['p1'] = {};
-        this.players['p2'] = {};
-        
         // Create a World
         const world = new p2.World({
-            gravity: [0, -10]
+            gravity: [0, -100]
         });
 
         this.world = world;
@@ -75,7 +74,7 @@ module.exports = class Engine {
         // this.players['p2'].platformBody = platformBody;
 
         // Create blocks
-        this.players['p1'].blockBodies = [];
+        this.players[Object.keys(this.players)[0]].blockBodies = [];
         
         let blockShape = new p2.Box({
             width: 30,
@@ -85,10 +84,10 @@ module.exports = class Engine {
             // angle: Math.random() * 360,
             position: [0, 0],
             velocity: [0, 0],
-            mass: 1
+            mass: 10
         });
             blockBody.addShape(blockShape);
-            this.players['p1'].blockBodies.push(blockBody);
+            this.players[Object.keys(this.players)[0]].blockBodies.push(blockBody);
             world.addBody(blockBody);
 
         // for (let i = 0; i < 5; i++) {
@@ -107,7 +106,7 @@ module.exports = class Engine {
         // }
 
         // Create blocks
-        this.players['p2'].blockBodies = [];
+        this.players[Object.keys(this.players)[1]].blockBodies = [];
         
         // for (let i = 0; i < 5; i++) {
         //     let blockShape = new p2.Box({
@@ -272,9 +271,20 @@ module.exports = class Engine {
     }
 
     addBlock(playerId, x, y) {
-        // this.addBodies.push(block)
-        // return true; // placed the block
-        return false; // failed to place the block
+        let blockShape = new p2.Box({
+            width: 30,
+            height: 30
+        });
+        let blockBody = new p2.Body({
+            // angle: Math.random() * 360,
+            position: [x, y],
+            velocity: [0, 0],
+            mass: 10
+        });
+        blockBody.addShape(blockShape);
+        this.players[playerId].blockBodies.push(blockBody);
+        this.world.addBody(blockBody);
+        return true; // failed to place the block
     }
 
     getBlockBodies(){
