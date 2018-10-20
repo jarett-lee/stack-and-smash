@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Stack and Smash</title>
-
     <link rel="stylesheet" href="./css/main.css" />
     <link rel="stylesheet" href="./css/animate.css" />
 </head>
@@ -41,10 +40,11 @@
         </div>
     </div>
 
-    <div id="game">
-        <canvas id="game-canvas">
+    <div id="game" class="game-screen">
+        <canvas id="game-canvas" class="game-canvas" width="800" height="400"></canvas>
+        <div class="game-controls">
 
-        </canvas>
+        </div>
     </div>
 </body>
 
@@ -52,5 +52,6 @@
 <script src="./scripts/main.js"></script>
 <script src="./scripts/interface.js"></script>
 <script src="./scripts/connector.js"></script>
+<script src="./scripts/game.js"></script>
 
 </html>
