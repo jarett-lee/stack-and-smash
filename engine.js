@@ -23,6 +23,11 @@ module.exports = class Engine {
         this.players[player1].cooldownDoneTime = 0;
         this.players[player2].cooldownDoneTime = 0;
         
+        this.players[player1].rightBlock = this.getRandBlockType();
+        this.players[player1].leftBlock = this.getRandBlockType();
+        this.players[player2].rightBlock = this.getRandBlockType();
+        this.players[player2].leftBlock = this.getRandBlockType();
+
         // Create a World
         const world = new p2.World({
             gravity: [0, -1000]
@@ -48,11 +53,11 @@ module.exports = class Engine {
 
         // Create a platform
         let platformShape = new p2.Box({
-            width: 100,
+            width: 200,
             height: 5
         });
         let platformBody = new p2.Body({
-            position: [-150, -100],
+            position: [-250, -100],
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -65,11 +70,11 @@ module.exports = class Engine {
 
         // Create a platform
         platformShape = new p2.Box({
-            width: 100,
+            width: 200,
             height: 5
         });
         platformBody = new p2.Body({
-            position: [150, -100],
+            position: [250, -100],
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -137,7 +142,7 @@ module.exports = class Engine {
         }, 5000);
     }
 
-    step() {
+    step(playerid) {
         this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
         if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
@@ -161,17 +166,28 @@ module.exports = class Engine {
             }
         ));
 
-        let blocks = this.getBlockBodies().map((bb) => (
-            {
-                x: bb.position[0],
-                y: bb.position[1],
-                width: bb.shapes[0].width,
-                height: bb.shapes[0].height,
-                angle: bb.angle,
-                playerOne: bb.playerOne,
-                blockType: bb.blockType
+        let blocks = this.getBlockBodies().map((bb) => {
+            let width = 0;
+            let height = 0;
+            if(bb.blockType && bb.blockType === "jankBlock"){
+                width = BLOCK_SIZE * 2;
+                height = BLOCK_SIZE * 3;
+            }else {
+                width = bb.shapes[0].width;
+                height == bb.shapes[0].height;
             }
-        ));
+            return(
+                {
+                    x: bb.position[0],
+                    y: bb.position[1],
+                    width: width,
+                    height: height,
+                    angle: bb.angle,
+                    playerOne: bb.playerOne,
+                    blockType: bb.blockType
+                }
+            );
+        });
 
         let cannons = this.getCannonBodies().map((cb) => (
             {
@@ -194,6 +210,9 @@ module.exports = class Engine {
                 playerOne: pb.playerOne
             }
         ));
+
+        let right = this.players[playerid].rightBlock;
+        let left = this.players[playerid].leftBlock;
         
         return {
             bullets: bullets,
@@ -202,7 +221,10 @@ module.exports = class Engine {
             platforms: platforms,
             errorMessage: this.errorMessage,
             remainingTime: this.timer.remainingTime,
-            winner: this.winner
+            winner: this.winner,
+            leftBlock: left,
+            rightBlock: right
+
         };
     }
 
@@ -280,7 +302,7 @@ module.exports = class Engine {
         });
     }
 
-    addBlock(playerId, x, y, blockType) {
+    addBlock(playerId, x, y, blockType, selection) {
         if (this.timer.remainingTime === 0) {
             this.errorMessage = "Game is over";
             return false;
@@ -297,6 +319,11 @@ module.exports = class Engine {
                 this.errorMessage = "Place on the other side of the screen";
                 return false;
             }
+        }
+
+        if (y < this.calcHeight(playerId)) {
+            this.errorMessage = "Place your block higher up";
+            return false;
         }
 
         const hrTime = process.hrtime();
@@ -328,7 +355,29 @@ module.exports = class Engine {
         blockBody.blockType = blockType;
         
         this.errorMessage = "";
+
+        if(selection === "right"){
+            this.players[playerId].rightBlock = this.getRandBlockType();
+        }else {
+            this.players[playerId].leftBlock = this.getRandBlockType();
+        }
         return true;
+    }
+
+    getRandBlockType(){
+        let blockTypes = ["basicBlock", "longBlock", "lBlock"];
+        let num = Math.random();
+
+        if(num < .1){
+            return {type: "cannon"};
+        }
+        else{
+            let type = blockTypes[Math.floor(Math.random() * blockTypes.length)];
+            let angle = Math.floor(Math.random() * 4) * 90;
+            return {type: type, angle: angle};
+        }
+        
+
     }
 
     newBody(x, y, mass){
@@ -430,6 +479,7 @@ module.exports = class Engine {
             height: BLOCK_SIZE
         });
     }
+
     getBlockBodies(){
         let blockBodies = [];
         for (let [ key, val ] of Object.entries(this.players)) {
@@ -463,17 +513,22 @@ module.exports = class Engine {
 
     calcHeight (playerId) {
         const blocks = this.players[playerId].blockBodies;
+        const minHeight = -70;
 
         if (blocks.length === 0)
-            return 0;
+            return minHeight;
 
-        let height = blocks[0].position[1];
+        let maxHeight = blocks[0].position[1] + blocks[0].boundingRadius;
 
-        for (let i = 0; i < blocks.length; i++) {
-            if (blocks[i].position[1] > height)
-                height = blocks[i].position[1];
+        for (let i = 1; i < blocks.length; i++) {
+            const height = blocks[i].position[1] + blocks[i].boundingRadius;
+            if (height > maxHeight) {
+                maxHeight = height;
+            }
         }
+        
+        maxHeight = maxHeight + 30; // Prevent collision
 
-        return height + 400;
+        return Math.max(Math.min(maxHeight, 400), minHeight);
     }
 }
