@@ -10,6 +10,7 @@ module.exports = class Engine {
         };
 
         this.players = {};
+        this.playerOne = player1;
         this.players[player1] = {};
         this.players[player2] = {};
         
@@ -24,7 +25,7 @@ module.exports = class Engine {
         world.defaultContactMaterial.friction = 100;
         world.solver.iterations = 20;
         world.solver.tolerance = 0.001;
-        world.setGlobalStiffness(1e4)
+        world.setGlobalStiffness(1e6)
 
         // Physics properties
         this.maxSubSteps = 5; // Max physics ticks per render frame
@@ -50,6 +51,7 @@ module.exports = class Engine {
         
         this.players[player1].platformBody = platformBody;
         this.players[player1].blockBodies = [];
+        platformBody.playerOne = true;
 
         // Create a platform
         platformShape = new p2.Box({
@@ -65,6 +67,7 @@ module.exports = class Engine {
 
         this.players[player2].platformBody = platformBody;
         this.players[player2].blockBodies = [];
+        platformBody.playerOne = false;
         
         this.createFakeWorld();
     }
@@ -150,7 +153,8 @@ module.exports = class Engine {
                 y: bb.position[1],
                 width: bb.shapes[0].width,
                 height: bb.shapes[0].height,
-                angle: bb.angle
+                angle: bb.angle,
+                playerOne: bb.playerOne
             }
         ));
 
@@ -160,7 +164,8 @@ module.exports = class Engine {
                 y: pb.position[1],
                 width: pb.shapes[0].width,
                 height: pb.shapes[0].height,
-                angle: pb.angle
+                angle: pb.angle,
+                playerOne: pb.playerOne
             }
         ));
         
@@ -307,19 +312,6 @@ module.exports = class Engine {
         blockBody.addShape(this.newBlockShape());
         blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE, 0]);
         blockBody.addShape(this.newBlockShape(), [0, BLOCK_SIZE]);
-    }
-
-    newSquareBlock(x, y){
-        let blockBody = new p2.Body({
-            position: [x,y],
-            velocity: [0,0],
-            mass: 100
-        });
-        
-        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE,0]);
-        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE,0]);
-        blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE,0]);
-        return blockBody;
     }
 
 
