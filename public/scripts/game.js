@@ -8,6 +8,7 @@ let canvasWidth = 800;
 let canvasHeight = 400;
 
 let isRunning = true;
+let isPlaying = true;
 
 const spriteSheet = {
     player1: {
@@ -50,6 +51,11 @@ function draw(){
         return;
     }
 
+    if (isPlaying && s.remainingTime === 0) {
+        timeUp();
+        isPlaying = false;
+    }
+
     if (isRunning && s.winner) {
         endGame();
         isRunning = false;
@@ -80,8 +86,8 @@ function draw(){
 
     errorDisplay.innerText = s.errorMessage;
 
-    document.getElementById("player1-score").innerText = "" + Math.round((local.playerOneHeight + 70) * 100) / 100;
-    document.getElementById("player2-score").innerText = "" + Math.round((local.playerTwoHeight + 70) * 100) / 100;
+    document.getElementById("player1-score").innerText = "" + Math.round((local.playerOneHeight + 70) * 10) / 10;
+    document.getElementById("player2-score").innerText = "" + Math.round((local.playerTwoHeight + 70) * 10) / 10;
 
     const playerSprite = spriteSheet[player];
     if (s[player].leftBlock.type !== "cannon"){
@@ -247,7 +253,32 @@ gameCanvas.addEventListener('contextmenu', function(ev) {
     return false;
 }, false);
 
+function timeUp () {
+    const timeUp = document.getElementById("time-up");
+
+    timeUp.style.visibility = "initial";
+    timeUp.className += "animated zoomIn";
+
+    let addDot = (num) => {
+        let string = '';
+        for (let i = 0; i < num; i++) {
+            string += '.';
+        }
+
+        document.getElementById('dots').innerText = string;
+
+        if (num < 5) {
+            setTimeout(() => {addDot(num + 1)}, 1000);
+        }
+    };
+
+    addDot(1);
+}
+
 function endGame () {
+    document.getElementById("time-up").className = "";
+    document.getElementById("time-up").className = "animated zoomOut";
+
     const results = document.getElementById("results");
 
     if (s.winner !== player) {

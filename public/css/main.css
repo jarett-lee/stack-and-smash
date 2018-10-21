@@ -173,6 +173,19 @@ button:hover {
     display: table-cell;
 }
 
+#time-up {
+    position: absolute;
+    top: calc(50% - 50px);
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    padding: 20px 0 20px 0;
+}
+
+#time-up-message {
+    font-size: 60px;
+}
+
 #results {
     position: absolute;
     top: calc(50% - 100px);
