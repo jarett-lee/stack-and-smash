@@ -14,6 +14,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background: url(../img/background.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }
 body > * {
     visibility: hidden;
@@ -36,7 +40,10 @@ button:hover {
 }
 
 .center-component {
-    width: 700px;
+    width: 600px;
+    background: rgba(255, 255, 255, .95);
+    border: 1px solid lightgrey;
+    padding: 10px;
     margin: auto;
     position: absolute;
     text-align: center;
