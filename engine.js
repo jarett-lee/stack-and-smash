@@ -59,6 +59,7 @@ module.exports = class Engine {
         });
         let platformBody = new p2.Body({
             position: [-250, -100],
+            friction: 1,
             mass: 0
         });
         platformBody.addShape(platformShape);
