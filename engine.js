@@ -586,7 +586,7 @@ module.exports = class Engine {
             }
         }
         
-        maxHeight = maxHeight + 30; // Prevent collision
+        maxHeight = maxHeight; // Prevent collision
 
         return Math.max(Math.min(maxHeight, 400), minHeight);
     }
