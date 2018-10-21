@@ -249,23 +249,23 @@ gameCanvas.addEventListener('click', (event) => {
     });
 });
 
-gameCanvas.addEventListener('contextmenu', function(ev) {
-    ev.preventDefault();
-    const rect = gameCanvas.getBoundingClientRect();
-    const x = event.clientX - rect.left - 400;
-    const y = (event.clientY - rect.top - 200) * -1;
-
-    socket.emit('create-block', {
-        token: gameToken,
-        x: x,
-        y: y,
-        selection: "right",
-        rotation: s[player].rightBlock.type === "lBlock" ? s[player].rightBlock.angle + 270 : s[player].rightBlock.angle
-    }, (success) => {
-    });
-
-    return false;
-}, false);
+// gameCanvas.addEventListener('contextmenu', function(ev) {
+//     ev.preventDefault();
+//     const rect = gameCanvas.getBoundingClientRect();
+//     const x = event.clientX - rect.left - 400;
+//     const y = (event.clientY - rect.top - 200) * -1;
+// 
+//     socket.emit('create-block', {
+//         token: gameToken,
+//         x: x,
+//         y: y,
+//         selection: "right",
+//         rotation: s[player].rightBlock.type === "lBlock" ? s[player].rightBlock.angle + 270 : s[player].rightBlock.angle
+//     }, (success) => {
+//     });
+// 
+//     return false;
+// }, false);
 
 function timeUp () {
     const timeUp = document.getElementById("time-up");

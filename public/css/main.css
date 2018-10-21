@@ -226,3 +226,7 @@ button:hover {
 #results-message {
     font-size: 50px;
 }
+
+#next-right {
+    visibility: hidden;
+}
