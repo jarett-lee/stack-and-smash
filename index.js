@@ -2,7 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
-const port = process.env.NODE_ENV === 'production' ? 80 : process.env.port || 3000;
+const port = process.env.PORT || 5000;
 
 var tokengen = require('rand-token');
 
