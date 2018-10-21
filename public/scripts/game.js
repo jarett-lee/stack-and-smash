@@ -80,6 +80,9 @@ function draw(){
 
     errorDisplay.innerText = s.errorMessage;
 
+    document.getElementById("player1-score").innerText = "" + Math.round((local.playerOneHeight + 70) * 100) / 100;
+    document.getElementById("player2-score").innerText = "" + Math.round((local.playerTwoHeight + 70) * 100) / 100;
+
     const playerSprite = spriteSheet[player];
     if (s[player].leftBlock.type !== "cannon")
         document.getElementById("left-image").src = playerSprite[s[player].leftBlock.type].src;
@@ -251,7 +254,7 @@ function endGame () {
     else
         height = s.playerTwoHeight;
 
-    document.getElementById("height").innerText = "" + Math.floor(height);
+    document.getElementById("height").innerText = "" + Math.floor(height + 70);
 
     results.style.visibility = "initial";
     results.className += " animated bounceInDown";
