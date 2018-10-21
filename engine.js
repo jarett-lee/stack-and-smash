@@ -302,7 +302,7 @@ module.exports = class Engine {
         });
     }
 
-    addBlock(playerId, x, y, selection) {
+    addBlock(playerId, x, y, selection, rotation) {
         if (this.timer.remainingTime === 0) {
             this.errorMessage = "Game is over";
             return false;
@@ -366,8 +366,9 @@ module.exports = class Engine {
         blockBody.playerOne = this.playerOne === playerId;
         blockBody.blockType = blockType;
         
+        blockBody.angle = rotation * (Math.PI / 180);
         this.errorMessage = "";
-
+        
         if(selection === "right"){
             this.players[playerId].rightBlock = this.getRandBlockType();
         }else {

@@ -68,14 +68,19 @@ function draw(){
     errorDisplay.innerText = s.errorMessage;
 
     const playerSprite = spriteSheet[player];
-    if (s[player].leftBlock.type !== "cannon")
+    if (s[player].leftBlock.type !== "cannon"){
         document.getElementById("left-image").src = playerSprite[s[player].leftBlock.type].src;
-    else
+        document.getElementById("left-image").setAttribute('style', 'transform:rotate(' + s[player].leftBlock.angle + 'deg)');
+    }else{
         document.getElementById("left-image").src = spriteSheet.cannon.src;
+       
+    }
+        
     
-    if (s[player].rightBlock.type !== "cannon")
+    if (s[player].rightBlock.type !== "cannon"){
         document.getElementById("right-image").src = playerSprite[s[player].rightBlock.type].src;
-    else
+        document.getElementById("right-image").setAttribute('style', 'transform:rotate(' + s[player].rightBlock.angle + 'deg)');
+    }else
         document.getElementById("right-image").src = spriteSheet.cannon.src;
     
 
@@ -175,7 +180,8 @@ gameCanvas.addEventListener('click', (event) => {
         token: gameToken,
         x: x,
         y: y,
-        selection: "left"
+        selection: "left",
+        rotation: s[player].leftBlock.angle
     }, (success) => {
     });
 });
@@ -190,7 +196,8 @@ gameCanvas.addEventListener('contextmenu', function(ev) {
         token: gameToken,
         x: x,
         y: y,
-        selection: "right"
+        selection: "right",
+        rotation: s[player].rightBlock.angle
     }, (success) => {
     });
 
