@@ -138,3 +138,17 @@ button:hover {
 #right-left > div {
     display: table-cell;
 }
+
+#results {
+    position: absolute;
+    top: calc(50% - 100px);
+    transform: translateY(-50%);
+    background: rgba(145, 237, 145, .85);
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+}
+
+#results-message {
+    font-size: 40px;
+}

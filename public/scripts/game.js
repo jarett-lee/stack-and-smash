@@ -7,6 +7,8 @@ let ctx = gameCanvas.getContext("2d");
 let canvasWidth = 800;
 let canvasHeight = 400;
 
+let isRunning = true;
+
 const spriteSheet = {
     player1: {
         lBlock: new Image(30, 30),
@@ -47,6 +49,12 @@ function draw(){
         window.requestAnimationFrame(draw);
         return;
     }
+
+    if (isRunning && s.winner) {
+        endGame();
+        isRunning = false;
+    }
+
     clear();
     let local = s;
     local.blocks.forEach((block) => {
@@ -228,3 +236,23 @@ gameCanvas.addEventListener('contextmenu', function(ev) {
 
     return false;
 }, false);
+
+function endGame () {
+    const results = document.getElementById("results");
+
+    if (s.winner !== player) {
+        results.style.background = "rgba(252, 86, 83, .85)";
+        document.getElementById("results-message").innerText = "You Lose...";
+    }
+
+    let height;
+    if (player === "player1")
+        height = s.playerOneHeight;
+    else
+        height = s.playerTwoHeight;
+
+    document.getElementById("height").innerText = "" + Math.floor(height);
+
+    results.style.visibility = "initial";
+    results.className += " animated bounceInDown";
+}
