@@ -207,6 +207,8 @@ module.exports = class Engine {
         const hrTime = process.hrtime();
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
         this.updatePhysics(milli);
+        this.players[playerId].cooldownLeft = Math.max(this.players[playerId].cooldownDoneTime - milli, 0);
+        const cooldownLeft = this.players[playerId].cooldownLeft;
 
         let bullets = this.getBulletBodies().map((bb) => (
             {
@@ -284,7 +286,8 @@ module.exports = class Engine {
             player1: player1,
             player2: player2,
             playerOneHeight: playerOneHeight,
-            playerTwoHeight: playerTwoHeight
+            playerTwoHeight: playerTwoHeight,
+            cooldownLeft: cooldownLeft
         };
     }
 
