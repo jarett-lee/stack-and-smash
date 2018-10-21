@@ -46,7 +46,7 @@ button:hover {
     border: 1px solid black;
     border-radius: 5px;
     margin: 0 auto;
-    margin-top: calc(50vh - 250px);
+    margin-top: calc(50vh - 275px);
     overflow: hidden;
     width: 800px;
 }
@@ -117,6 +117,40 @@ button:hover {
     width: 196px;
 }
 
+#player-sides {
+    padding-top: 10px;
+    width: 800px;
+    height: 40px;
+    border-bottom: 1px solid black;
+}
+
+#player-sides span {
+    font-family: QuirkyRobot;
+    font-size: 40px;
+    letter-spacing: 2px;
+}
+
+#player1 {
+    width: 350px;
+    padding: 0 10px 0 10px;
+    float: left;
+    color: #29cdee;
+    font-family: QuirkyRobot;
+    font-size: 40px;
+    letter-spacing: 2px;
+}
+
+#player2 {
+    width: 350px;
+    padding: 0 10px 0 10px;
+    float: right;
+    color: #f58848;
+    font-family: QuirkyRobot;
+    font-size: 40px;
+    text-align: right;
+    letter-spacing: 2px;
+}
+
 #game-controls-left {
     width: 400px;
     height: 100px;
@@ -146,7 +180,7 @@ button:hover {
     background: rgba(145, 237, 145, .85);
     width: 100%;
     text-align: center;
-    padding: 20px;
+    padding: 20px 0 20px 0;
 }
 
 #results-message {
