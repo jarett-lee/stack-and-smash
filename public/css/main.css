@@ -69,6 +69,7 @@ button:hover {
     border-top: 1px solid black;
     height: 100px;
     width: 100%;
+    display: flex;
 }
 
 .no-select *{
@@ -167,16 +168,16 @@ button:hover {
 }
 
 #game-controls-left {
-    width: 400px;
+    width: 300px;
     height: 100px;
-    float: left;
+    display: inline-block;
     margin-left: 5px;
 }
 
 #up-next {
     width: 300px;
     height: 100px;
-    float: right;
+    display: inline-block;
 }
 
 #right-left {
