@@ -326,6 +326,10 @@ module.exports = class Engine {
                 this.bulletBodies.splice(index, 1);
             }
         });
+        if (body.blockType && body.blockType === "cannon") {
+            const cannonBody = body;
+            clearInterval(cannonBody.shootLoop);
+        }
     }
 
     addBlock(playerId, x, y, selection) {
@@ -476,6 +480,7 @@ module.exports = class Engine {
         }, 1000, cannonBody, cannonBody.playerOne);
         cannonBody.height = 30;
         cannonBody.width = 30;
+        cannonBody.shootLoop = intId;
         return cannonBody;
     }
 
