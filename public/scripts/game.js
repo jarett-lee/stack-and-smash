@@ -294,7 +294,7 @@ function endGame () {
     else
         height = s.playerTwoHeight;
 
-    document.getElementById("height").innerText = "" + Math.floor(height + 70);
+    document.getElementById("height").innerText = "" + Math.round((height + 70) * 10) / 10;
 
     results.style.visibility = "initial";
     results.className += " animated bounceInDown";
