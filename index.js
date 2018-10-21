@@ -21,6 +21,6 @@ app.get('/*.*', (req, res) => {
     res.sendFile(`${req.params[0]}.${req.params[1]}`, { root: 'public' });
 })
 
-server.listen(port, () => {
-    console.log("Listening on port", port);
+server.listen(process.env.PORT || 3000, () => {
+    console.log("Listening on port", process.env.PORT || 3000);
 });
