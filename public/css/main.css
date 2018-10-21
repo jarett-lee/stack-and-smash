@@ -64,7 +64,7 @@ button:hover {
     display: block;
     height: 400px;
     width: 100%;
-    cursor: none;
+    cursor: crosshair;
 }
 
 .game-controls{

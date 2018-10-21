@@ -275,6 +275,18 @@ function drawHeight(state) {
     ctx.restore();
 }
 
+gameCanvas.addEventListener('mousemove', (event) => {
+    canvasMouseX = event.clientX - gameCanvas.getBoundingClientRect().left - canvasWidth/2;
+    if(!s){
+        return;
+    }
+    if (s.playerOne && canvasMouseX > -50){
+        canvasMouseX = -50;
+    } else if(!s.playerOne && canvasMouseX < 50){
+        canvasMouseX = 50;
+    }
+})
+
 gameCanvas.addEventListener('click', (event) => {
     const rect = gameCanvas.getBoundingClientRect();
     const x = event.clientX - rect.left - canvasWidth/2;
