@@ -276,11 +276,9 @@ function drawHeight(state) {
     ctx.restore();
 }
 
-gameCanvas.addEventListener('mousemove', (event) => {
+function updateMousePosition(event) {
     canvasMouseX = event.clientX - gameCanvas.getBoundingClientRect().left - canvasWidth/2;
-    if(!s){
-        return;
-    }
+    
     if (s.playerOne && canvasMouseX > -50){
         canvasMouseX = -50;
     } else if(!s.playerOne && canvasMouseX < 50){
@@ -291,17 +289,26 @@ gameCanvas.addEventListener('mousemove', (event) => {
     } else {
         placeY = s.playerTwoHeight + 30;
     }
+}
+
+gameCanvas.addEventListener('mousemove', (event) => {
+    if(!s){
+        return;
+    }
+    updateMousePosition(event);
 })
 
 gameCanvas.addEventListener('click', (event) => {
-    const rect = gameCanvas.getBoundingClientRect();
-    const x = event.clientX - rect.left - canvasWidth/2;
-    const y = placeY;
+    updateMousePosition(event);
+    
+    // const rect = gameCanvas.getBoundingClientRect();
+    // const x = event.clientX - rect.left - canvasWidth/2;
+    // const y = placeY;
 
     socket.emit('create-block', {
         token: gameToken,
-        x: x,
-        y: y,
+        x: canvasMouseX,
+        y: placeY,
         selection: "left"
     }, (success) => {
     });
