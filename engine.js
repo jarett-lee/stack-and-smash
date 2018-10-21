@@ -30,17 +30,18 @@ module.exports = class Engine {
 
         // Create a World
         const world = new p2.World({
-            gravity: [0, -1000]
+            gravity: [0, -500]
         });
 
         this.world = world;
         this.cannonBodies = [];
 
         // Set high friction so the wheels don't slip
-        world.defaultContactMaterial.friction = 100;
+        world.defaultContactMaterial.friction = 10;
         world.solver.iterations = 20;
-        world.solver.tolerance = 0.001;
-        world.setGlobalStiffness(1e6);
+        world.solver.tolerance = .001;
+        world.setGlobalStiffness(1e12);
+        world.sleepMode = p2.World.BODY_SLEEPING;
 
         // Physics properties
         this.maxSubSteps = 5; // Max physics ticks per render frame
@@ -455,7 +456,7 @@ module.exports = class Engine {
     }
 
     getRandBlockType(){
-        let blockTypes = ["basicBlock", "longBlock", "horizLongBlock"];
+        let blockTypes = ["basicBlock", "basicBlock", "longBlock", "horizLongBlock"];
 
        
         let num = Math.random();
@@ -490,6 +491,10 @@ module.exports = class Engine {
         blockBody.width = 30;
         blockBody.height = 30;
         blockBody.addShape(boxShape);
+        blockBody.allowSleep = true;
+        blockBody.sleepSpeedLimit = 1;
+        blockBody.sleepTimeLimit = 1;
+        blockBody.angularDamping = .2;
         return blockBody;
     }
     newLongBlock(x, y){
@@ -501,6 +506,10 @@ module.exports = class Engine {
         blockBody.width = 15;
         blockBody.height = 60;
         blockBody.addShape(longShape);
+        blockBody.allowSleep = true;
+        blockBody.sleepSpeedLimit = 1;
+        blockBody.sleepTimeLimit = 1;
+        blockBody.angularDamping = .2;
         return blockBody;
     }
 
@@ -512,8 +521,10 @@ module.exports = class Engine {
             width: 60,
             height: 15
         }));
-
-        
+        blockBody.allowSleep = true;
+        blockBody.sleepSpeedLimit = 1;
+        blockBody.sleepTimeLimit = 1;
+        blockBody.angularDamping = .2;
         return blockBody;
     }
     newCannonBlock(playerId, x, y) {
@@ -550,6 +561,10 @@ module.exports = class Engine {
         cannonBody.height = 30;
         cannonBody.width = 30;
         cannonBody.shootLoop = intId;
+        cannonBody.allowSleep = true;
+        cannonBody.sleepSpeedLimit = 1;
+        cannonBody.sleepTimeLimit = 1;
+        cannonBody.angularDamping = .2;
         this.cannonBodies.push(cannonBody);
         return cannonBody;
     }
@@ -560,9 +575,9 @@ module.exports = class Engine {
         });
         let v;
         if(rightFacing){
-            v = [800 * Math.cos(theta), 800 * Math.sin(theta)]
+            v = [600 * Math.cos(theta), 600 * Math.sin(theta)]
         } else {
-            v = [800 * -Math.cos(theta), 800 * -Math.sin(theta)]
+            v = [600 * -Math.cos(theta), 600 * -Math.sin(theta)]
         }
         let bulletBody = new p2.Body({
             position: [x,y],

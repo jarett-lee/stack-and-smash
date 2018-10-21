@@ -7,6 +7,7 @@ let ctx = gameCanvas.getContext("2d");
 let canvasWidth = 800;
 let canvasHeight = 400;
 let canvasMouseX = 0;
+let placeY = 0;
 
 let isRunning = true;
 let isPlaying = true;
@@ -136,7 +137,7 @@ function drawPreview(state){
     }
     ctx.save();
     ctx.globalAlpha = 0.5;
-    ctx.translate(canvasMouseX, canvasHeight/2 - 40);
+    ctx.translate(canvasMouseX, placeY);
     if(!state.playerOne){
         ctx.scale(-1, 1);
     }
@@ -285,12 +286,17 @@ gameCanvas.addEventListener('mousemove', (event) => {
     } else if(!s.playerOne && canvasMouseX < 50){
         canvasMouseX = 50;
     }
+    if (s.playerOne) {
+        placeY = s.playerOneHeight + 30;
+    } else {
+        placeY = s.playerTwoHeight + 30;
+    }
 })
 
 gameCanvas.addEventListener('click', (event) => {
     const rect = gameCanvas.getBoundingClientRect();
     const x = event.clientX - rect.left - canvasWidth/2;
-    const y = canvasHeight/2 - 40;
+    const y = placeY;
 
     socket.emit('create-block', {
         token: gameToken,
