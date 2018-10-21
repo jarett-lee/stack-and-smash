@@ -14,12 +14,14 @@ const spriteSheet = {
     player1: {
         lBlock: new Image(30, 30),
         longBlock: new Image(15, 60),
-        basicBlock: new Image(30, 30)
+        basicBlock: new Image(30, 30),
+        horizLongBlock: new Image(60, 15)
     },
     player2: {
         lBlock: new Image(30, 30),
         longBlock: new Image(15, 60),
         basicBlock: new Image(30, 30),
+        horizLongBlock: new Image(60, 15)
     },
     cannon: new Image(30,30),
     bullet: new Image(6, 6),
@@ -32,10 +34,12 @@ spriteSheet.fire.src = "/img/ARW-2D-Flame Sprite-Sheet-by-Chromaeleon.png";
 spriteSheet.player1.lBlock.src = "/img/player1/lBlock.png";
 spriteSheet.player1.longBlock.src = "/img/player1/long.png";
 spriteSheet.player1.basicBlock.src = "/img/player1/basic.png";
+spriteSheet.player1.horizLongBlock.src = "/img/player1/horizontalLong.png"
 
 spriteSheet.player2.lBlock.src = "/img/player2/lBlock.png";
 spriteSheet.player2.longBlock.src = "/img/player2/long.png";
 spriteSheet.player2.basicBlock.src = "/img/player2/basic.png";
+spriteSheet.player2.horizLongBlock.src = "/img/player2/horizontalLong.png"
 
 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 ctx.translate(canvasWidth / 2, canvasHeight / 2)
@@ -149,6 +153,9 @@ function drawBasicBlock(block){
             break;
         case "longBlock":
             ctx.drawImage(sprite, 0, 0, 15, 60, -block.width/2, -block.height/2, 15, 60);
+            break;
+        case "horizLongBlock":
+            ctx.drawImage(sprite, 0, 0, 60, 15, -block.width/2, -block.height/2,  60, 15);
             break;
     }
 

@@ -431,7 +431,9 @@ module.exports = class Engine {
             blockBody = this.newJankBlock(x, y);
         }else if(blockType ==="cannon"){
             blockBody = this.newCannonBlock(playerId, x, y);
-        }else {
+        }else if(blockType === "horizLongBlock"){
+            blockBody = this.newHorLong(x, y);
+        }else{
             blockBody = this.newSquareBlock(x, y);
         }
 
@@ -453,7 +455,7 @@ module.exports = class Engine {
     }
 
     getRandBlockType(){
-        let blockTypes = ["lBlock", "basicBlock", "longBlock"];
+        let blockTypes = ["basicBlock", "longBlock", "horizLongBlock"];
         let num = Math.random();
 
         if(num < .25){
@@ -497,6 +499,18 @@ module.exports = class Engine {
         return blockBody;
     }
 
+    newHorLong(x , y){
+        let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
+        blockBody.height = 15;
+        blockBody.width = 60;
+        blockBody.addShape(new p2.Box({
+            width: 60,
+            height: 15
+        }));
+
+        
+        return blockBody;
+    }
     newCannonBlock(playerId, x, y) {
         if (this.timer.remainingTime === 0)
             return false;
@@ -565,6 +579,8 @@ module.exports = class Engine {
         blockBody.addShape(this.newBlockShape(), [-BLOCK_SIZE/2, -BLOCK_SIZE]);
         return blockBody;
     }
+
+    
 
     newLBlock(x, y){
         let blockBody = this.newBody(x, y, BLOCK_MASS * 3);

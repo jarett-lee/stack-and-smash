@@ -14,6 +14,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background: url(../img/background.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }
 body > * {
     visibility: hidden;
@@ -36,7 +40,10 @@ button:hover {
 }
 
 .center-component {
-    width: 700px;
+    width: 600px;
+    background: rgba(255, 255, 255, .95);
+    border: 1px solid lightgrey;
+    padding: 10px;
     margin: auto;
     position: absolute;
     text-align: center;
@@ -49,7 +56,9 @@ button:hover {
     margin-top: calc(50vh - 275px);
     overflow: hidden;
     width: 800px;
+    background: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    user-select: none;
 }
 .game-canvas{
     display: block;
@@ -62,6 +71,8 @@ button:hover {
     border-top: 1px solid black;
     height: 100px;
     width: 100%;
+    display: flex;
+    user-select: none;
 }
 
 .no-select *{
@@ -160,16 +171,16 @@ button:hover {
 }
 
 #game-controls-left {
-    width: 400px;
+    width: 300px;
     height: 100px;
-    float: left;
+    display: inline-block;
     margin-left: 5px;
 }
 
 #up-next {
     width: 300px;
     height: 100px;
-    float: right;
+    display: inline-block;
 }
 
 #right-left {
