@@ -2,7 +2,6 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
-const port = process.env.port || 3000;
 var tokengen = require('rand-token');
 
 require('./sockets.js')(server, { origins: '*:*' });
@@ -20,6 +19,6 @@ app.get('/*.*', (req, res) => {
     res.sendFile(`${req.params[0]}.${req.params[1]}`, { root: 'public' });
 })
 
-server.listen(port, () => {
-    console.log("Listening on port", port);
+server.listen(process.env.port || 3000, () => {
+    console.log("Listening on port", process.env.port || 3000);
 });
