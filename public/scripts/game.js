@@ -90,6 +90,7 @@ function draw(){
     });
     
     drawHeight(local);
+    updateMousePosition();
 
     let time = s.remainingTime.toString();
     let decimal = time.split('.');
@@ -277,13 +278,16 @@ function drawHeight(state) {
 }
 
 function updateMousePosition(event) {
-    canvasMouseX = event.clientX - gameCanvas.getBoundingClientRect().left - canvasWidth/2;
-    
-    if (s.playerOne && canvasMouseX > -50){
-        canvasMouseX = -50;
-    } else if(!s.playerOne && canvasMouseX < 50){
-        canvasMouseX = 50;
+    if (event) {
+        canvasMouseX = event.clientX - gameCanvas.getBoundingClientRect().left - canvasWidth/2;
+
+        if (s.playerOne && canvasMouseX > -50){
+            canvasMouseX = -50;
+        } else if(!s.playerOne && canvasMouseX < 50){
+            canvasMouseX = 50;
+        }
     }
+
     if (s.playerOne) {
         placeY = s.playerOneHeight + 30;
     } else {
