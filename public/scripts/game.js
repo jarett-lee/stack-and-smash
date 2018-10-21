@@ -224,7 +224,7 @@ gameCanvas.addEventListener('click', (event) => {
         x: x,
         y: y,
         selection: "left",
-        rotation: s[player].leftBlock.angle +270
+        rotation: s[player].leftBlock.type === "lBlock" ? s[player].leftBlock.angle + 270 : s[player].leftBlock.angle
     }, (success) => {
     });
 });
@@ -240,7 +240,7 @@ gameCanvas.addEventListener('contextmenu', function(ev) {
         x: x,
         y: y,
         selection: "right",
-        rotation: s[player].rightBlock.angle + 270
+        rotation: s[player].rightBlock.type === "lBlock" ? s[player].rightBlock.angle + 270 : s[player].rightBlock.angle
     }, (success) => {
     });
 

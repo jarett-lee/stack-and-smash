@@ -430,7 +430,7 @@ module.exports = class Engine {
     }
 
     getRandBlockType(){
-        let blockTypes = ["lBlock"];
+        let blockTypes = ["lBlock", "basicBlock", "longBlock"];
         let num = Math.random();
 
         if(num < .1){
