@@ -84,6 +84,22 @@ button:hover {
     color: black;
 }
 
+.next-img-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.next-img-container img {
+    -moz-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    transform: scaleY(-1);
+    -ms-filter: "FlipV";
+}
+
 #title a {
     color: black;
     text-decoration: none;
@@ -99,4 +115,26 @@ button:hover {
 
 #game-token-input {
     width: 196px;
+}
+
+#game-controls-left {
+    width: 400px;
+    height: 100px;
+    float: left;
+}
+
+#up-next {
+    width: 300px;
+    height: 100px;
+    float: right;
+}
+
+#right-left {
+    height: 72px;
+    width: 100%;
+    display: table;
+}
+
+#right-left > div {
+    display: table-cell;
 }

@@ -46,9 +46,27 @@
     <div id="game" class="game-screen">
         <canvas id="game-canvas" class="game-canvas" width="800" height="400"></canvas>
         <div class="game-controls">
-            <p id="fps"></p>
-            <p id="remainingTime"></p>
-            <p id="error"></p>
+            <div id="game-controls-left">
+                <p id="fps"></p>
+                <p id="remainingTime"></p>
+                <p id="error"></p>
+            </div>
+
+            <div id="up-next">
+                <h2>Up Next:</h2>
+                <div id="right-left">
+                    <div id="next-left">
+                        <div class="next-img-container">
+                            <img id="left-image" src="./img/player1/basic.png">
+                        </div>
+                    </div>
+                    <div id="next-right">
+                        <div class="next-img-container">
+                            <img id="right-image" src="./img/player1/lBlock.png">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

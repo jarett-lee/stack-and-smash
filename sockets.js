@@ -56,9 +56,7 @@ module.exports = (server) => {
 
             let x = data.x;
             let y = data.y;
-            let block = data.selection;
-
-            if(!worlds[data.token].addBlock(socket.id, x, y, "lBlock")){
+            if(!worlds[data.token].addBlock(socket.id, x, y, data.selection)){
                 callback(false);
             }
             callback(true);

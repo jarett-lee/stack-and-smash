@@ -39,7 +39,7 @@ module.exports = class Engine {
         world.defaultContactMaterial.friction = 100;
         world.solver.iterations = 20;
         world.solver.tolerance = 0.001;
-        world.setGlobalStiffness(1e6)
+        world.setGlobalStiffness(1e6);
 
         // Physics properties
         this.maxSubSteps = 5; // Max physics ticks per render frame
@@ -93,7 +93,7 @@ module.exports = class Engine {
 
         // Create bullets
         this.bulletBodies = [];
-        
+        /*
         for (let i = 0; i < 5; i++) {
             let bulletShape = new p2.Circle({
                 radius: 3
@@ -122,6 +122,7 @@ module.exports = class Engine {
             this.bulletBodies.push(bulletBody);
             world.addBody(bulletBody);
         }
+        */
     }
 
     endGame () {
@@ -211,8 +212,24 @@ module.exports = class Engine {
             }
         ));
 
-        let right = this.players[playerid].rightBlock;
-        let left = this.players[playerid].leftBlock;
+        let right = this.players[Object.keys(this.players)[0]].rightBlock;
+        let left = this.players[Object.keys(this.players)[0]].leftBlock;
+
+        const player1 = {
+            leftBlock: left,
+            rightBlock: right
+        };
+
+        right = this.players[Object.keys(this.players)[1]].rightBlock;
+        left = this.players[Object.keys(this.players)[1]].leftBlock;
+
+        const player2 = {
+            leftBlock: left,
+            rightBlock: right
+        };
+
+        const playerOneHeight = this.calcHeight(Object.keys(this.players)[0]);
+        const playerTwoHeight = this.calcHeight(Object.keys(this.players)[1]);
         
         return {
             bullets: bullets,
@@ -222,9 +239,10 @@ module.exports = class Engine {
             errorMessage: this.errorMessage,
             remainingTime: this.timer.remainingTime,
             winner: this.winner,
-            leftBlock: left,
-            rightBlock: right
-
+            player1: player1,
+            player2: player2,
+            playerOneHeight: playerOneHeight,
+            playerTwoHeight: playerTwoHeight
         };
     }
 
@@ -302,7 +320,7 @@ module.exports = class Engine {
         });
     }
 
-    addBlock(playerId, x, y, blockType, selection) {
+    addBlock(playerId, x, y, selection) {
         if (this.timer.remainingTime === 0) {
             this.errorMessage = "Game is over";
             return false;
@@ -334,6 +352,15 @@ module.exports = class Engine {
         else {
             this.errorMessage = "Placing is on cooldown";
             return false;
+        }
+
+        let blockType;
+        if (selection === "left") {
+            blockType = this.players[playerId].leftBlock.type;
+            this.players[playerId].leftBlock = this.getRandBlockType();
+        } else {
+            blockType = this.players[playerId].rightBlock.type;
+            this.players[playerId].rightBlock = this.getRandBlockType();
         }
 
         let blockBody = {};
@@ -376,8 +403,6 @@ module.exports = class Engine {
             let angle = Math.floor(Math.random() * 4) * 90;
             return {type: type, angle: angle};
         }
-        
-
     }
 
     newBody(x, y, mass){

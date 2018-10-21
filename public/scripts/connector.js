@@ -11,6 +11,7 @@ function createGame () {
         // Receive game token from server upon successful request
         document.getElementById("game-token").innerHTML = token;
         gameToken = token;
+        player = "player1";
         show('game-id');
     });
 }
@@ -20,6 +21,7 @@ function createGame () {
  */
 function cancelGame () {
     socket.emit('cancel-game', gameToken, function () {
+        player = undefined;
         show('main-menu');
     });
 }
@@ -36,6 +38,8 @@ function joinGame () {
 
         // If successfully joined game from game token
         if (success) {
+            player = "player2";
+
             show("game");
         } else {
             // Alert that the token was not right
