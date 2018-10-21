@@ -65,6 +65,11 @@ button:hover {
     height: 400px;
     width: 100%;
     cursor: crosshair;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -o-user-select: none;
 }
 
 .game-controls{
