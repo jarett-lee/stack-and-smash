@@ -274,7 +274,6 @@ module.exports = class Engine {
 
         const playerOneHeight = this.calcHeight(Object.keys(this.players)[0]);
         const playerTwoHeight = this.calcHeight(Object.keys(this.players)[1]);
-        
         return {
             animates: animates,
             bullets: bullets,
