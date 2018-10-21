@@ -34,6 +34,7 @@ module.exports = class Engine {
         });
 
         this.world = world;
+        this.cannonBodies = [];
 
         // Set high friction so the wheels don't slip
         world.defaultContactMaterial.friction = 100;
@@ -142,6 +143,11 @@ module.exports = class Engine {
     }
 
     endGame () {
+        // Stop the cannons from firing
+        for (let cannonBody of this.cannonBodies) {
+            clearInterval(cannonBody.shootLoop);
+        }
+        
         // Wait for blocks to settle and then calc the highest
         setTimeout(() => {
             this.isRunning = false;
@@ -481,6 +487,7 @@ module.exports = class Engine {
         cannonBody.height = 30;
         cannonBody.width = 30;
         cannonBody.shootLoop = intId;
+        this.cannonBodies.push(cannonBody);
         return cannonBody;
     }
 
