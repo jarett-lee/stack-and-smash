@@ -75,7 +75,7 @@ function draw(){
     local.animates.forEach((animate) => {
         drawAnimate(animate);
     });
-    
+
     remainingTimeDisplay.innerText = s.remainingTime;
 
     errorDisplay.innerText = s.errorMessage;
