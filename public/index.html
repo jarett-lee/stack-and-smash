@@ -44,11 +44,16 @@
     </div>
 
     <div id="game" class="game-screen">
+        <div id="player-sides">
+            <h1 id="player1">Player 1 - <span id="player1-score"></span></h1>
+            <h1 id="player2"><span id="player2-score"></span> - Player 2</h1>
+        </div>
         <canvas id="game-canvas" class="game-canvas" width="800" height="400"></canvas>
         <div class="game-controls">
             <div id="game-controls-left">
-                <p id="fps"></p>
-                <p id="remainingTime"></p>
+                <h2>Time Remaining:</h2>
+
+                <h2 id="remainingTime"></h2>
                 <p id="error"></p>
             </div>
 
@@ -69,10 +74,21 @@
             </div>
         </div>
     </div>
+
+    <div id="results" class="">
+        <h1 id="results-message">You win!</h1>
+        <br />
+
+        <h2>You built to a height of <span id="height"></span>!</h2>
+        <br />
+
+        <button onclick="location.reload()">Restart</button>
+    </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 <script src="./scripts/main.js"></script>
+<script src="./scripts/sprite.js"></script>
 <script src="./scripts/interface.js"></script>
 <script src="./scripts/connector.js"></script>
 <script src="./scripts/game.js"></script>

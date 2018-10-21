@@ -7,6 +7,8 @@ let ctx = gameCanvas.getContext("2d");
 let canvasWidth = 800;
 let canvasHeight = 400;
 
+let isRunning = true;
+
 const spriteSheet = {
     player1: {
         lBlock: new Image(30, 30),
@@ -19,16 +21,18 @@ const spriteSheet = {
         basicBlock: new Image(30, 30),
     },
     cannon: new Image(30,30),
-    bullet: new Image(6, 6)
+    bullet: new Image(6, 6),
+    fire: new Image()
 };
 spriteSheet.cannon.src = "/img/cannon.png";
 spriteSheet.bullet.src = "/img/bullet.png";
+spriteSheet.fire.src = "/img/ARW-2D-Flame Sprite-Sheet-by-Chromaeleon.png";
 
-spriteSheet.player1.lBlock.src = "/img/player1/lBLock.png";
+spriteSheet.player1.lBlock.src = "/img/player1/lBlock.png";
 spriteSheet.player1.longBlock.src = "/img/player1/long.png";
 spriteSheet.player1.basicBlock.src = "/img/player1/basic.png";
 
-spriteSheet.player2.lBlock.src = "/img/player2/lBLock.png";
+spriteSheet.player2.lBlock.src = "/img/player2/lBlock.png";
 spriteSheet.player2.longBlock.src = "/img/player2/long.png";
 spriteSheet.player2.basicBlock.src = "/img/player2/basic.png";
 
@@ -45,6 +49,12 @@ function draw(){
         window.requestAnimationFrame(draw);
         return;
     }
+
+    if (isRunning && s.winner) {
+        endGame();
+        isRunning = false;
+    }
+
     clear();
     let local = s;
     local.blocks.forEach((block) => {
@@ -62,20 +72,31 @@ function draw(){
     });
 
     drawHeight(local);
-    
+    local.animates.forEach((animate) => {
+        drawAnimate(animate);
+    });
+
     remainingTimeDisplay.innerText = s.remainingTime;
 
     errorDisplay.innerText = s.errorMessage;
 
+    document.getElementById("player1-score").innerText = "" + Math.round((local.playerOneHeight + 70) * 100) / 100;
+    document.getElementById("player2-score").innerText = "" + Math.round((local.playerTwoHeight + 70) * 100) / 100;
+
     const playerSprite = spriteSheet[player];
-    if (s[player].leftBlock.type !== "cannon")
+    if (s[player].leftBlock.type !== "cannon"){
         document.getElementById("left-image").src = playerSprite[s[player].leftBlock.type].src;
-    else
+        document.getElementById("left-image").setAttribute('style', 'transform:rotate(' + s[player].leftBlock.angle + 'deg)');
+    }else{
         document.getElementById("left-image").src = spriteSheet.cannon.src;
+       
+    }
+        
     
-    if (s[player].rightBlock.type !== "cannon")
+    if (s[player].rightBlock.type !== "cannon"){
         document.getElementById("right-image").src = playerSprite[s[player].rightBlock.type].src;
-    else
+        document.getElementById("right-image").setAttribute('style', 'transform:rotate(' + s[player].rightBlock.angle + 'deg)');
+    }else
         document.getElementById("right-image").src = spriteSheet.cannon.src;
     
 
@@ -143,6 +164,33 @@ function drawBullet(bullet){
     ctx.restore();
 }
 
+const allAnimates = [];
+function drawAnimate(animate){
+    if (!allAnimates[animate.id]) {
+        allAnimates[animate.id] = createAnimate(animate);
+    }
+    const myAnimate = allAnimates[animate.id];
+    myAnimate.update();
+    if (animate.animateType === 'fire') {
+        myAnimate.render(animate.x, animate.y + 5);
+    }
+    else {
+        myAnimate.render(animate.x, animate.y);
+    }
+}
+
+function createAnimate(animate) {
+    return sprite({
+        context: ctx,
+        numberOfFrames: 7,
+        loop: true,
+        ticksPerFrame: 10,
+        width: 24,
+        height: 24,
+        image: spriteSheet[animate.animateType]
+    });
+}
+
 function clear(){
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(-canvasWidth/2, -canvasHeight/2, canvasWidth, canvasHeight);
@@ -175,7 +223,8 @@ gameCanvas.addEventListener('click', (event) => {
         token: gameToken,
         x: x,
         y: y,
-        selection: "left"
+        selection: "left",
+        rotation: s[player].leftBlock.type === "lBlock" ? s[player].leftBlock.angle + 270 : s[player].leftBlock.angle
     }, (success) => {
     });
 });
@@ -190,9 +239,30 @@ gameCanvas.addEventListener('contextmenu', function(ev) {
         token: gameToken,
         x: x,
         y: y,
-        selection: "right"
+        selection: "right",
+        rotation: s[player].rightBlock.type === "lBlock" ? s[player].rightBlock.angle + 270 : s[player].rightBlock.angle
     }, (success) => {
     });
 
     return false;
 }, false);
+
+function endGame () {
+    const results = document.getElementById("results");
+
+    if (s.winner !== player) {
+        results.style.background = "rgba(252, 86, 83, .85)";
+        document.getElementById("results-message").innerText = "You Lose...";
+    }
+
+    let height;
+    if (player === "player1")
+        height = s.playerOneHeight;
+    else
+        height = s.playerTwoHeight;
+
+    document.getElementById("height").innerText = "" + Math.floor(height + 70);
+
+    results.style.visibility = "initial";
+    results.className += " animated bounceInDown";
+}

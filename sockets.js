@@ -2,24 +2,27 @@ module.exports = (server) => {
     const io = require('socket.io')(server);
     let tokengen = require('rand-token');
     const Engine = require('./engine.js');
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     let tokens = {};
     let worlds = {};
     io.on('connection', (socket) => {
         socket.on('create-game', (callback) => {
             let tok = "";
-            while(((tok = tokengen.generate(4)) in tokens));//Generate token that doesn't already exist
+            while(((tok = tokengen.generate(4, alphabet)) in tokens));//Generate token that doesn't already exist
             tokens[tok] = {"playerOne" : socket.id};
             callback(tok);
             socket.join(tok);
         });
 
         socket.on('cancel-game', (token, callback) => {
+            token = token.toUpperCase();
             tokens[token] = undefined;
             socket.leave(token);
             callback();
         });
 
         socket.on('join-game', (token, callback) => {
+            token = token.toUpperCase();
             if(token in tokens){
                 //Join Room
                 socket.join(token);
@@ -56,7 +59,14 @@ module.exports = (server) => {
 
             let x = data.x;
             let y = data.y;
-            if(!worlds[data.token].addBlock(socket.id, x, y, data.selection)){
+            let rotation = 0;
+            if(data.rotation){
+                rotation = data.rotation;
+            }else{
+                rotation = 0;
+            }
+            
+            if(!worlds[data.token].addBlock(socket.id, x, y, data.selection, rotation)){
                 callback(false);
             }
             callback(true);

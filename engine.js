@@ -8,7 +8,7 @@ module.exports = class Engine {
 
         this.timer = {
             start: Date.now(),
-            duration: 30,
+            duration: 30.0,
             running: true
         };
 
@@ -34,6 +34,7 @@ module.exports = class Engine {
         });
 
         this.world = world;
+        this.cannonBodies = [];
 
         // Set high friction so the wheels don't slip
         world.defaultContactMaterial.friction = 100;
@@ -58,6 +59,7 @@ module.exports = class Engine {
         });
         let platformBody = new p2.Body({
             position: [-250, -150],
+            friction: 1,
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -75,6 +77,7 @@ module.exports = class Engine {
         });
         platformBody = new p2.Body({
             position: [250, -150],
+            friction: 1,
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -84,6 +87,18 @@ module.exports = class Engine {
         this.players[player2].blockBodies = [];
         this.players[player2].cannonBodies = [];
         platformBody.playerOne = false;
+        
+        this.hasContactEver = {};
+        const that = this;
+        
+        // Catch impacts in the world
+        world.on("beginContact",function(evt){
+            const bodyA = evt.bodyA;
+            const bodyB = evt.bodyB;
+            
+            that.hasContactEver[bodyA.id] = true;
+            that.hasContactEver[bodyB.id] = true;
+        });
         
         this.createFakeWorld();
     }
@@ -123,9 +138,30 @@ module.exports = class Engine {
             world.addBody(bulletBody);
         }
         */
+        
+        let fireShape = new p2.Circle({
+            radius: 5
+        });
+        let fireBody = new p2.Body({
+            position: [0, 50],
+            velocity: [250, 150],
+            friction: .9,
+            mass: 1
+        });
+        fireBody.addShape(fireShape);
+        world.addBody(fireBody);
+        fireBody.animateType = "fire";
+        
+        this.animateBodies = [];
+        this.animateBodies.push(fireBody);
     }
 
     endGame () {
+        // Stop the cannons from firing
+        for (let cannonBody of this.cannonBodies) {
+            clearInterval(cannonBody.shootLoop);
+        }
+        
         // Wait for blocks to settle and then calc the highest
         setTimeout(() => {
             this.isRunning = false;
@@ -144,7 +180,7 @@ module.exports = class Engine {
     }
 
     step(playerid) {
-        this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
+        this.timer.remainingTime = Math.round((this.timer.duration - ((Date.now() - this.timer.start) / 1000)) * 100) / 100;
         if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
 
@@ -163,26 +199,34 @@ module.exports = class Engine {
                 x: bb.position[0],
                 y: bb.position[1],
                 radius: bb.shapes[0].radius,
-                angle: bb.angle
+                angle: bb.angle,
+                id: bb.id
+            }
+        ));
+        
+        let animates = this.getAnimateBodies().map((b) => (
+            {
+                x: b.position[0],
+                y: b.position[1],
+                radius: b.shapes[0].radius,
+                angle: b.angle,
+                animateType: b.animateType,
+                id: b.id
             }
         ));
 
-        let blocks = this.getBlockBodies().map((bb) => {
-            let width = 0;
-            let height = 0;
-            
-            return(
-                {
-                    x: bb.position[0],
-                    y: bb.position[1],
-                    width: bb.width,
-                    height: bb.height,
-                    angle: bb.angle,
-                    playerOne: bb.playerOne,
-                    blockType: bb.blockType
-                }
-            );
-        });
+        let blocks = this.getBlockBodies().map((bb) => (
+            {
+                x: bb.position[0],
+                y: bb.position[1],
+                width: bb.shapes[0].width,
+                height: bb.shapes[0].height,
+                angle: bb.angle,
+                playerOne: bb.playerOne,
+                blockType: bb.blockType,
+                id: bb.id
+            }
+        ));
 
         let platforms = this.getPlatformBodies().map((pb) => (
             {
@@ -191,7 +235,8 @@ module.exports = class Engine {
                 width: pb.shapes[0].width,
                 height: pb.shapes[0].height,
                 angle: pb.angle,
-                playerOne: pb.playerOne
+                playerOne: pb.playerOne,
+                id: pb.id
             }
         ));
 
@@ -215,6 +260,7 @@ module.exports = class Engine {
         const playerTwoHeight = this.calcHeight(Object.keys(this.players)[1]);
         
         return {
+            animates: animates,
             bullets: bullets,
             blocks: blocks,
             platforms: platforms,
@@ -300,9 +346,16 @@ module.exports = class Engine {
                 this.bulletBodies.splice(index, 1);
             }
         });
+        if (body.blockType && body.blockType === "cannon") {
+            const cannonBody = body;
+            clearInterval(cannonBody.shootLoop);
+        }
     }
 
-    addBlock(playerId, x, y, selection) {
+    addBlock(playerId, x, y, selection, rotation) {
+        if(rotation >= 360){
+            rotation -= 360;
+        }
         if (this.timer.remainingTime === 0) {
             this.errorMessage = "Game is over";
             return false;
@@ -366,8 +419,9 @@ module.exports = class Engine {
         blockBody.playerOne = this.playerOne === playerId;
         blockBody.blockType = blockType;
         
+        blockBody.angle = rotation * (Math.PI / 180);
         this.errorMessage = "";
-
+        
         if(selection === "right"){
             this.players[playerId].rightBlock = this.getRandBlockType();
         }else {
@@ -377,7 +431,7 @@ module.exports = class Engine {
     }
 
     getRandBlockType(){
-        let blockTypes = ["basicBlock", "longBlock", "lBlock"];
+        let blockTypes = ["lBlock", "basicBlock", "longBlock"];
         let num = Math.random();
 
         if(num < .5){
@@ -385,7 +439,7 @@ module.exports = class Engine {
         }
         else{
             let type = blockTypes[Math.floor(Math.random() * blockTypes.length)];
-            let angle = Math.floor(Math.random() * 4) * 90;
+            let angle = Math.floor(Math.random() * 4) * 180;
             return {type: type, angle: angle};
         }
     }
@@ -450,6 +504,8 @@ module.exports = class Engine {
         }, 1000, cannonBody, cannonBody.playerOne);
         cannonBody.height = 30;
         cannonBody.width = 30;
+        cannonBody.shootLoop = intId;
+        this.cannonBodies.push(cannonBody);
         return cannonBody;
     }
 
@@ -506,6 +562,10 @@ module.exports = class Engine {
 
         return blockBodies;
     }
+    
+    getAnimateBodies(){
+        return this.animateBodies;
+    }
 
     getCannonBodies() {
         let cannonBodies = [];
@@ -539,13 +599,16 @@ module.exports = class Engine {
         let maxHeight = blocks[0].position[1] + blocks[0].boundingRadius;
 
         for (let i = 1; i < blocks.length; i++) {
+            if (!this.hasContactEver[blocks[i].id]) {
+                continue;
+            }
             const height = blocks[i].position[1] + blocks[i].boundingRadius;
             if (height > maxHeight) {
                 maxHeight = height;
             }
         }
         
-        maxHeight = maxHeight + 30; // Prevent collision
+        maxHeight = maxHeight; // Prevent collision
 
         return Math.max(Math.min(maxHeight, 400), minHeight);
     }
