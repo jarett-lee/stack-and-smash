@@ -26,11 +26,11 @@ spriteSheet.cannon.src = "/img/cannon.png";
 spriteSheet.bullet.src = "/img/bullet.png";
 spriteSheet.fire.src = "/img/ARW-2D-Flame Sprite-Sheet-by-Chromaeleon.png";
 
-spriteSheet.player1.lBlock.src = "/img/player1/lBLock.png";
+spriteSheet.player1.lBlock.src = "/img/player1/lBlock.png";
 spriteSheet.player1.longBlock.src = "/img/player1/long.png";
 spriteSheet.player1.basicBlock.src = "/img/player1/basic.png";
 
-spriteSheet.player2.lBlock.src = "/img/player2/lBLock.png";
+spriteSheet.player2.lBlock.src = "/img/player2/lBlock.png";
 spriteSheet.player2.longBlock.src = "/img/player2/long.png";
 spriteSheet.player2.basicBlock.src = "/img/player2/basic.png";
 
