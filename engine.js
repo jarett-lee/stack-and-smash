@@ -8,7 +8,7 @@ module.exports = class Engine {
 
         this.timer = {
             start: Date.now(),
-            duration: 30.0,
+            duration: 60.0,
             running: true
         };
 
@@ -456,16 +456,21 @@ module.exports = class Engine {
 
     getRandBlockType(){
         let blockTypes = ["basicBlock", "longBlock", "horizLongBlock"];
+
+       
         let num = Math.random();
 
-        if(num < .25){
-            return {type: "cannon"};
+        if(this.timer.remainingTime < 30){
+            if(num < .25){
+                return {type: "cannon"};
+            }    
         }
-        else{
-            let type = blockTypes[Math.floor(Math.random() * blockTypes.length)];
-            let angle = Math.floor(Math.random() * 4) * 180;
-            return {type: type, angle: angle};
-        }
+        
+        
+        let type = blockTypes[Math.floor(Math.random() * blockTypes.length)];
+        let angle = Math.floor(Math.random() * 4) * 180;
+        return {type: type, angle: angle};
+        
     }
 
     newBody(x, y, mass){
