@@ -8,7 +8,7 @@ module.exports = class Engine {
 
         this.timer = {
             start: Date.now(),
-            duration: 30,
+            duration: 30.0,
             running: true
         };
 
@@ -54,7 +54,7 @@ module.exports = class Engine {
         // Create a platform
         let platformShape = new p2.Box({
             width: 200,
-            height: 5
+            height: 20
         });
         let platformBody = new p2.Body({
             position: [-250, -100],
@@ -71,7 +71,7 @@ module.exports = class Engine {
         // Create a platform
         platformShape = new p2.Box({
             width: 200,
-            height: 5
+            height: 20
         });
         platformBody = new p2.Body({
             position: [250, -100],
@@ -123,6 +123,22 @@ module.exports = class Engine {
             world.addBody(bulletBody);
         }
         */
+        
+        let fireShape = new p2.Circle({
+            radius: 5
+        });
+        let fireBody = new p2.Body({
+            position: [0, 50],
+            velocity: [250, 150],
+            friction: .9,
+            mass: 1
+        });
+        fireBody.addShape(fireShape);
+        world.addBody(fireBody);
+        fireBody.animateType = "fire";
+        
+        this.animateBodies = [];
+        this.animateBodies.push(fireBody);
     }
 
     endGame () {
@@ -144,7 +160,7 @@ module.exports = class Engine {
     }
 
     step(playerid) {
-        this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
+        this.timer.remainingTime = Math.round((this.timer.duration - ((Date.now() - this.timer.start) / 1000)) * 100) / 100;
         if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
 
@@ -163,26 +179,34 @@ module.exports = class Engine {
                 x: bb.position[0],
                 y: bb.position[1],
                 radius: bb.shapes[0].radius,
-                angle: bb.angle
+                angle: bb.angle,
+                id: bb.id
+            }
+        ));
+        
+        let animates = this.getAnimateBodies().map((b) => (
+            {
+                x: b.position[0],
+                y: b.position[1],
+                radius: b.shapes[0].radius,
+                angle: b.angle,
+                animateType: b.animateType,
+                id: b.id
             }
         ));
 
-        let blocks = this.getBlockBodies().map((bb) => {
-            let width = 0;
-            let height = 0;
-            
-            return(
-                {
-                    x: bb.position[0],
-                    y: bb.position[1],
-                    width: bb.width,
-                    height: bb.height,
-                    angle: bb.angle,
-                    playerOne: bb.playerOne,
-                    blockType: bb.blockType
-                }
-            );
-        });
+        let blocks = this.getBlockBodies().map((bb) => (
+            {
+                x: bb.position[0],
+                y: bb.position[1],
+                width: bb.shapes[0].width,
+                height: bb.shapes[0].height,
+                angle: bb.angle,
+                playerOne: bb.playerOne,
+                blockType: bb.blockType,
+                id: bb.id
+            }
+        ));
 
         let platforms = this.getPlatformBodies().map((pb) => (
             {
@@ -191,7 +215,8 @@ module.exports = class Engine {
                 width: pb.shapes[0].width,
                 height: pb.shapes[0].height,
                 angle: pb.angle,
-                playerOne: pb.playerOne
+                playerOne: pb.playerOne,
+                id: pb.id
             }
         ));
 
@@ -215,6 +240,7 @@ module.exports = class Engine {
         const playerTwoHeight = this.calcHeight(Object.keys(this.players)[1]);
         
         return {
+            animates: animates,
             bullets: bullets,
             blocks: blocks,
             platforms: platforms,
@@ -505,6 +531,10 @@ module.exports = class Engine {
         }
 
         return blockBodies;
+    }
+    
+    getAnimateBodies(){
+        return this.animateBodies;
     }
 
     getCannonBodies() {
