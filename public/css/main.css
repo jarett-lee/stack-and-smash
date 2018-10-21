@@ -99,6 +99,8 @@ button:hover {
     -webkit-transform: scaleY(-1);
     transform: scaleY(-1);
     -ms-filter: "FlipV";
+    opacity: 0.1;
+    filter: alpha(opacity=50);
 }
 
 #title a {
