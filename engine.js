@@ -54,7 +54,7 @@ module.exports = class Engine {
         // Create a platform
         let platformShape = new p2.Box({
             width: 200,
-            height: 5
+            height: 20
         });
         let platformBody = new p2.Body({
             position: [-250, -100],
@@ -71,7 +71,7 @@ module.exports = class Engine {
         // Create a platform
         platformShape = new p2.Box({
             width: 200,
-            height: 5
+            height: 20
         });
         platformBody = new p2.Body({
             position: [250, -100],
@@ -125,14 +125,17 @@ module.exports = class Engine {
         */
         
         let fireShape = new p2.Circle({
-            radius: 3
+            radius: 5
         });
         let fireBody = new p2.Body({
             position: [0, 50],
-            mass: 0
+            velocity: [250, 150],
+            friction: .9,
+            mass: 1
         });
         fireBody.addShape(fireShape);
-        // world.addBody(fireBody);
+        world.addBody(fireBody);
+        fireBody.animateType = "fire";
         
         this.animateBodies = [];
         this.animateBodies.push(fireBody);
@@ -187,7 +190,7 @@ module.exports = class Engine {
                 y: b.position[1],
                 radius: b.shapes[0].radius,
                 angle: b.angle,
-                type: b.type,
+                animateType: b.animateType,
                 id: b.id
             }
         ));

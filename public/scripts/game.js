@@ -153,7 +153,12 @@ function drawAnimate(animate){
     }
     const myAnimate = allAnimates[animate.id];
     myAnimate.update();
-    myAnimate.render(animate.x, animate.y);
+    if (animate.animateType === 'fire') {
+        myAnimate.render(animate.x, animate.y + 5);
+    }
+    else {
+        myAnimate.render(animate.x, animate.y);
+    }
 }
 
 function createAnimate(animate) {
@@ -164,7 +169,7 @@ function createAnimate(animate) {
         ticksPerFrame: 10,
         width: 24,
         height: 24,
-        image: spriteSheet.fire
+        image: spriteSheet[animate.animateType]
     });
 }
 
