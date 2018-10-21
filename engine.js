@@ -193,7 +193,7 @@ module.exports = class Engine {
         }, 5000);
     }
 
-    step(playerid) {
+    step(playerId) {
         this.timer.remainingTime = Math.round((this.timer.duration - ((Date.now() - this.timer.start) / 1000)) * 100) / 100;
         if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
