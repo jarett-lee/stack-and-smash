@@ -170,19 +170,13 @@ module.exports = class Engine {
         let blocks = this.getBlockBodies().map((bb) => {
             let width = 0;
             let height = 0;
-            if(bb.blockType && bb.blockType === "jankBlock"){
-                width = BLOCK_SIZE * 2;
-                height = BLOCK_SIZE * 3;
-            }else {
-                width = BLOCK_SIZE*2;
-                height = BLOCK_SIZE*2;
-            }
+            
             return(
                 {
                     x: bb.position[0],
                     y: bb.position[1],
-                    width: width,
-                    height: height,
+                    width: bb.width,
+                    height: bb.height,
                     angle: bb.angle,
                     playerOne: bb.playerOne,
                     blockType: bb.blockType
@@ -418,6 +412,9 @@ module.exports = class Engine {
             width: 30,
             height: 30
         });
+
+        blockBody.width = 30;
+        blockBody.height = 30;
         blockBody.addShape(boxShape);
         return blockBody;
     }
@@ -426,7 +423,9 @@ module.exports = class Engine {
         let longShape = new p2.Box({
             width: 15,
             height: 60
-        })
+        });
+        blockBody.width = 15;
+        blockBody.height = 60;
         blockBody.addShape(longShape);
         return blockBody;
     }
@@ -480,7 +479,8 @@ module.exports = class Engine {
 
     newJankBlock(x, y){
         let blockBody = this.newBody(x, y, BLOCK_MASS * 4);
-
+        blockBody.height = 45;
+        blockBody.width = 30;
         blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, 0]);
         blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE/2, BLOCK_SIZE]);
         blockBody.addShape(this.newBlockShape(), [-BLOCK_SIZE/2, 0]);
@@ -490,7 +490,8 @@ module.exports = class Engine {
 
     newLBlock(x, y){
         let blockBody = this.newBody(x, y, BLOCK_MASS * 3);
-        
+        blockBody.width = 15;
+        blockBody.height = 15;
         blockBody.addShape(this.newBlockShape());
         blockBody.addShape(this.newBlockShape(), [BLOCK_SIZE, 0]);
         blockBody.addShape(this.newBlockShape(), [0, BLOCK_SIZE]);
