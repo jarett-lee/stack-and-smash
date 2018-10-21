@@ -75,20 +75,28 @@ function draw(){
     local.animates.forEach((animate) => {
         drawAnimate(animate);
     });
-    
+
     remainingTimeDisplay.innerText = s.remainingTime;
 
     errorDisplay.innerText = s.errorMessage;
 
+    document.getElementById("player1-score").innerText = "" + Math.round((local.playerOneHeight + 70) * 100) / 100;
+    document.getElementById("player2-score").innerText = "" + Math.round((local.playerTwoHeight + 70) * 100) / 100;
+
     const playerSprite = spriteSheet[player];
-    if (s[player].leftBlock.type !== "cannon")
+    if (s[player].leftBlock.type !== "cannon"){
         document.getElementById("left-image").src = playerSprite[s[player].leftBlock.type].src;
-    else
+        document.getElementById("left-image").setAttribute('style', 'transform:rotate(' + s[player].leftBlock.angle + 'deg)');
+    }else{
         document.getElementById("left-image").src = spriteSheet.cannon.src;
+       
+    }
+        
     
-    if (s[player].rightBlock.type !== "cannon")
+    if (s[player].rightBlock.type !== "cannon"){
         document.getElementById("right-image").src = playerSprite[s[player].rightBlock.type].src;
-    else
+        document.getElementById("right-image").setAttribute('style', 'transform:rotate(' + s[player].rightBlock.angle + 'deg)');
+    }else
         document.getElementById("right-image").src = spriteSheet.cannon.src;
     
 
@@ -215,7 +223,8 @@ gameCanvas.addEventListener('click', (event) => {
         token: gameToken,
         x: x,
         y: y,
-        selection: "left"
+        selection: "left",
+        rotation: s[player].leftBlock.angle +270
     }, (success) => {
     });
 });
@@ -230,7 +239,8 @@ gameCanvas.addEventListener('contextmenu', function(ev) {
         token: gameToken,
         x: x,
         y: y,
-        selection: "right"
+        selection: "right",
+        rotation: s[player].rightBlock.angle + 270
     }, (success) => {
     });
 
@@ -251,7 +261,7 @@ function endGame () {
     else
         height = s.playerTwoHeight;
 
-    document.getElementById("height").innerText = "" + Math.floor(height);
+    document.getElementById("height").innerText = "" + Math.floor(height + 70);
 
     results.style.visibility = "initial";
     results.className += " animated bounceInDown";

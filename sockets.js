@@ -56,7 +56,14 @@ module.exports = (server) => {
 
             let x = data.x;
             let y = data.y;
-            if(!worlds[data.token].addBlock(socket.id, x, y, data.selection)){
+            let rotation = 0;
+            if(data.rotation){
+                rotation = data.rotation;
+            }else{
+                rotation = 0;
+            }
+            
+            if(!worlds[data.token].addBlock(socket.id, x, y, data.selection, rotation)){
                 callback(false);
             }
             callback(true);
