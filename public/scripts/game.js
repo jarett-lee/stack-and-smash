@@ -56,6 +56,11 @@ function draw(){
         isPlaying = false;
     }
 
+    if (!isPlaying)
+        document.getElementById("timer").style.visibility = "hidden";
+    else
+        document.getElementById("timer").style.visibility = "initial";
+
     if (isRunning && s.winner) {
         endGame();
         isRunning = false;
@@ -82,7 +87,14 @@ function draw(){
         drawAnimate(animate);
     });
 
-    remainingTimeDisplay.innerText = s.remainingTime;
+    let time = s.remainingTime.toString();
+    let decimal = time.split('.');
+    if (!decimal[1])
+        time += ".00";
+    else if (decimal[1].length === 1)
+        time += "0";
+
+    remainingTimeDisplay.innerText = time;
 
     errorDisplay.innerText = s.errorMessage;
 
@@ -161,6 +173,8 @@ function drawPlatform(platform){
     ctx.rotate(platform.angle * Math.PI / 180);
     ctx.fillStyle = "#bfbfbf";
     ctx.fillRect(-platform.width/2, -platform.height/2, platform.width, platform.height);
+    ctx.fillStyle = "#000000";
+    ctx.strokeRect(-platform.width / 2, -platform.height / 2, platform.width, platform.height);
     ctx.restore();
 }
 
@@ -294,7 +308,7 @@ function endGame () {
     else
         height = s.playerTwoHeight;
 
-    document.getElementById("height").innerText = "" + Math.floor(height + 70);
+    document.getElementById("height").innerText = "" + Math.round((height + 70) * 10) / 10;
 
     results.style.visibility = "initial";
     results.className += " animated bounceInDown";

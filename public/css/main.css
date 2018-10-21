@@ -36,7 +36,7 @@ button:hover {
 }
 
 .center-component {
-    width: 500px;
+    width: 700px;
     margin: auto;
     position: absolute;
     text-align: center;
@@ -49,6 +49,7 @@ button:hover {
     margin-top: calc(50vh - 275px);
     overflow: hidden;
     width: 800px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .game-canvas{
     display: block;
@@ -57,7 +58,7 @@ button:hover {
 }
 
 .game-controls{
-    background-color: lightgray;
+    background-color: #f2f2f2;
     border-top: 1px solid black;
     height: 100px;
     width: 100%;
@@ -110,6 +111,11 @@ button:hover {
     text-align: center;
     font-family: QuirkyRobot;
     letter-spacing: 2px;
+    transition: font-size .4s;
+}
+
+#title a:hover {
+    font-size: 90px;
 }
 
 #main-menu-buttons {
@@ -158,6 +164,7 @@ button:hover {
     width: 400px;
     height: 100px;
     float: left;
+    margin-left: 5px;
 }
 
 #up-next {
@@ -174,6 +181,26 @@ button:hover {
 
 #right-left > div {
     display: table-cell;
+}
+
+#timer {
+    pointer-events: none;
+    position: absolute;
+    top: calc(50% - 180px);
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    padding: 20px 0 20px 0;
+}
+
+#remainingTime {
+    font-size: 60px;
+    background-color: #565656;
+    color: transparent;
+    text-shadow: 0px 2px 3px rgba(255,255,255,0.8);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
 }
 
 #time-up {
@@ -200,5 +227,5 @@ button:hover {
 }
 
 #results-message {
-    font-size: 40px;
+    font-size: 50px;
 }

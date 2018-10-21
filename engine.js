@@ -55,10 +55,10 @@ module.exports = class Engine {
         // Create a platform
         let platformShape = new p2.Box({
             width: 200,
-            height: 100
+            height: 120
         });
         let platformBody = new p2.Body({
-            position: [-250, -150],
+            position: [-250, -180],
             friction: 1,
             mass: 0
         });
@@ -73,10 +73,10 @@ module.exports = class Engine {
         // Create a platform
         platformShape = new p2.Box({
             width: 200,
-            height: 100
+            height: 120
         });
         platformBody = new p2.Body({
-            position: [250, -150],
+            position: [250, -180],
             friction: 1,
             mass: 0
         });
@@ -93,11 +93,23 @@ module.exports = class Engine {
         
         // Catch impacts in the world
         world.on("beginContact",function(evt){
-            const bodyA = evt.bodyA;
-            const bodyB = evt.bodyB;
+            let bodyA = evt.bodyA;
+            let bodyB = evt.bodyB;
             
             that.hasContactEver[bodyA.id] = true;
             that.hasContactEver[bodyB.id] = true;
+            
+            if (bodyA.animateType === "fire" && bodyB.blockType) {
+                const temp = bodyB;
+                bodyB = bodyA;
+                bodyA = temp;
+            }
+            if (bodyB.animateType === "fire" && bodyA.blockType) {
+                console.log('fire');
+                bodyA.mass = Math.max(bodyA.mass * 0.1, 0);
+                bodyA.friction = Math.max(bodyA.friction * 0.1, 0);
+                that.removeAnimate(bodyB);
+            }
         });
         
         this.createFakeWorld();
@@ -105,9 +117,12 @@ module.exports = class Engine {
 
     createFakeWorld() {
         const world = this.world;
+        
+        this.animateBodies = [];
 
         // Create bullets
         this.bulletBodies = [];
+        
         /*
         for (let i = 0; i < 5; i++) {
             let bulletShape = new p2.Circle({
@@ -137,7 +152,6 @@ module.exports = class Engine {
             this.bulletBodies.push(bulletBody);
             world.addBody(bulletBody);
         }
-        */
         
         let fireShape = new p2.Circle({
             radius: 5
@@ -152,8 +166,8 @@ module.exports = class Engine {
         world.addBody(fireBody);
         fireBody.animateType = "fire";
         
-        this.animateBodies = [];
         this.animateBodies.push(fireBody);
+        */
     }
 
     endGame () {
@@ -179,7 +193,7 @@ module.exports = class Engine {
         }, 5000);
     }
 
-    step(playerid) {
+    step(playerId) {
         this.timer.remainingTime = Math.round((this.timer.duration - ((Date.now() - this.timer.start) / 1000)) * 100) / 100;
         if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
@@ -193,6 +207,8 @@ module.exports = class Engine {
         const hrTime = process.hrtime();
         const milli = hrTime[0] * 1000 + hrTime[1] / 1000000;
         this.updatePhysics(milli);
+        this.players[playerId].cooldownLeft = Math.max(this.players[playerId].cooldownDoneTime - milli, 0);
+        const cooldownLeft = this.players[playerId].cooldownLeft;
 
         let bullets = this.getBulletBodies().map((bb) => (
             {
@@ -270,7 +286,8 @@ module.exports = class Engine {
             player1: player1,
             player2: player2,
             playerOneHeight: playerOneHeight,
-            playerTwoHeight: playerTwoHeight
+            playerTwoHeight: playerTwoHeight,
+            cooldownLeft: cooldownLeft
         };
     }
 
@@ -350,6 +367,11 @@ module.exports = class Engine {
             const cannonBody = body;
             clearInterval(cannonBody.shootLoop);
         }
+    }
+
+    removeAnimate(body){
+        this.world.removeBody(body);
+        this.animateBodies = this.animateBodies.filter( el => el.id !== body.id );
     }
 
     addBlock(playerId, x, y, selection, rotation) {
@@ -434,7 +456,7 @@ module.exports = class Engine {
         let blockTypes = ["lBlock", "basicBlock", "longBlock"];
         let num = Math.random();
 
-        if(num < .5){
+        if(num < .25){
             return {type: "cannon"};
         }
         else{
@@ -495,11 +517,15 @@ module.exports = class Engine {
             let theta = cannon.angle + Math.PI/4;
             let x = cannon.position[0];
             let y = cannon.position[1];
+            let xOrigin, yOrigin;
             if(!rightFacing){
                 theta = theta - Math.PI/2;
+                xOrigin = x - Math.cos(theta) * radius;
+                yOrigin = y - Math.sin(theta)*radius;
+            } else {
+                xOrigin = x + Math.cos(theta) * radius;
+                yOrigin = y + Math.sin(theta) * radius;
             }
-            let xOrigin = x - Math.cos(theta) * radius;
-            let yOrigin = y - Math.sin(theta)*radius;
             this.addBullet(rightFacing, xOrigin, yOrigin, theta);
         }, 1000, cannonBody, cannonBody.playerOne);
         cannonBody.height = 30;
@@ -513,8 +539,12 @@ module.exports = class Engine {
         let bulletShape = new p2.Circle({
             radius: 3
         });
-        console.log(theta);
-        let v = [800 * -Math.cos(theta), 800 * -Math.sin(theta)]
+        let v;
+        if(rightFacing){
+            v = [800 * Math.cos(theta), 800 * Math.sin(theta)]
+        } else {
+            v = [800 * -Math.cos(theta), 800 * -Math.sin(theta)]
+        }
         let bulletBody = new p2.Body({
             position: [x,y],
             velocity: v,

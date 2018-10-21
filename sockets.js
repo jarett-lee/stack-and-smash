@@ -52,6 +52,8 @@ module.exports = (server) => {
         });
 
         socket.on('create-block', (data, callback) => {
+            data.token = data.token || '';
+            data.token = data.token.toUpperCase();
             if(!data.token || !(data.token in tokens) || !worlds[data.token]){
                 callback(false);
                 return;
