@@ -6,6 +6,7 @@ let gameCanvas = document.getElementById("game-canvas");
 let ctx = gameCanvas.getContext("2d");
 let canvasWidth = 800;
 let canvasHeight = 400;
+let canvasMouseX = 0;
 
 let isRunning = true;
 let isPlaying = true;
@@ -63,6 +64,7 @@ function draw(){
 
     clear();
     let local = s;
+    drawPreview(local);
     local.blocks.forEach((block) => {
         if(block.blockType == "cannon"){
             drawCannon(block);
@@ -76,14 +78,10 @@ function draw(){
     local.bullets.forEach((bullet) => {
         drawBullet(bullet);
     });
-
+    
     drawHeight(local);
-    local.animates.forEach((animate) => {
-        drawAnimate(animate);
-    });
 
     remainingTimeDisplay.innerText = s.remainingTime;
-
     errorDisplay.innerText = s.errorMessage;
 
     document.getElementById("player1-score").innerText = "" + Math.round((local.playerOneHeight + 70) * 10) / 10;
@@ -95,24 +93,56 @@ function draw(){
         document.getElementById("left-image").setAttribute('style', 'transform:rotate(' + s[player].leftBlock.angle + 'deg)');
     }else{
         document.getElementById("left-image").src = spriteSheet.cannon.src;
-       
     }
-        
-    
     if (s[player].rightBlock.type !== "cannon"){
         document.getElementById("right-image").src = playerSprite[s[player].rightBlock.type].src;
         document.getElementById("right-image").setAttribute('style', 'transform:rotate(' + s[player].rightBlock.angle + 'deg)');
-    }else
+    }else{
         document.getElementById("right-image").src = spriteSheet.cannon.src;
-    
-
-    // let fps = Math.round(1000 / (Date.now() - d));
-    // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d)) + " " + s.time;
-    // d = Date.now();
-    // if(fps > 90 || fps < 30){
-    //     console.warn("Inadequate performance", fps);
-    // }
+    }
     window.requestAnimationFrame(draw);
+}
+
+function drawPreview(state){
+    const playerSprite = spriteSheet[player];
+    let img;
+    if (state[player].leftBlock.type != "cannon"){
+        img = playerSprite[state[player].leftBlock.type];
+    } else {
+        img = spriteSheet.cannon;
+    }
+    if(!img){
+        return;
+    }
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    ctx.translate(canvasMouseX, canvasHeight/2 - 40);
+    if(!state.playerOne){
+        ctx.scale(-1, 1);
+    }
+    ctx.drawImage(img, 0, 0, img.width, img.height, -img.width / 2, -img.height / 2, img.width, img.height);
+    ctx.lineWidth = 2;
+    
+    let g = ctx.createLinearGradient(img.width / 2 - 1, -img.height/2, img.width, -canvasHeight);
+    g.addColorStop(0, "grey");
+    g.addColorStop(1, "white"); 
+
+    ctx.fillStyle = g;
+    ctx.fillRect(-img.width / 2 + 2, -img.height / 2, img.width - 4, -canvasHeight);
+
+    ctx.beginPath();
+    ctx.setLineDash([3, 2]);
+    ctx.moveTo(-img.width/2 + 1, -img.height/2);
+    ctx.lineTo(-img.width / 2, -canvasHeight);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(img.width / 2 - 1, -img.height / 2);
+    ctx.lineTo(img.width / 2, -canvasHeight);
+    ctx.stroke();
+
+
+    ctx.restore();
 }
 
 function drawBasicBlock(block){
@@ -224,8 +254,8 @@ function drawHeight(state) {
 
 gameCanvas.addEventListener('click', (event) => {
     const rect = gameCanvas.getBoundingClientRect();
-    const x = event.clientX - rect.left - 400;
-    const y = (event.clientY - rect.top - 200) * -1;
+    const x = event.clientX - rect.left - canvasWidth/2;
+    const y = canvasHeight/2 - 40;
 
     socket.emit('create-block', {
         token: gameToken,
@@ -236,6 +266,24 @@ gameCanvas.addEventListener('click', (event) => {
     }, (success) => {
     });
 });
+
+gameCanvas.addEventListener('mousemove', (event) => {
+    if(!s){
+        return;
+    }
+    let margin = gameCanvas.getBoundingClientRect();
+    let left = Math.floor(margin.left);
+    canvasMouseX = event.clientX - left - canvasWidth/2;
+    if(s.playerOne){
+        if(canvasMouseX > -80){
+            canvasMouseX = -80;
+        }
+    }else{
+        if(canvasMouseX < 80){
+            canvasMouseX = 80;
+        }
+    }
+})
 
 gameCanvas.addEventListener('contextmenu', function(ev) {
     ev.preventDefault();

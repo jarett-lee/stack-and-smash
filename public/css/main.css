@@ -55,6 +55,7 @@ button:hover {
     display: block;
     height: 400px;
     width: 100%;
+    cursor: none;
 }
 
 .game-controls{
