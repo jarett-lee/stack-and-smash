@@ -251,8 +251,7 @@ gameCanvas.addEventListener('click', (event) => {
         token: gameToken,
         x: x,
         y: y,
-        selection: "left",
-        rotation: s[player].leftBlock.type === "lBlock" ? s[player].leftBlock.angle + 270 : s[player].leftBlock.angle
+        selection: "left"
     }, (success) => {
     });
 });
