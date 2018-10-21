@@ -173,8 +173,8 @@ module.exports = class Engine {
                 width = BLOCK_SIZE * 2;
                 height = BLOCK_SIZE * 3;
             }else {
-                width = bb.shapes[0].width;
-                height == bb.shapes[0].height;
+                width = BLOCK_SIZE*2;
+                height = BLOCK_SIZE*2;
             }
             return(
                 {
