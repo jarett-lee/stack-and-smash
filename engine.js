@@ -19,7 +19,7 @@ module.exports = class Engine {
 
         this.errorMessage = "";
 
-        this.cooldown = 200;
+        this.cooldown = 400;
         this.players[player1].cooldownDoneTime = 0;
         this.players[player2].cooldownDoneTime = 0;
         
@@ -286,7 +286,8 @@ module.exports = class Engine {
             player2: player2,
             playerOneHeight: playerOneHeight,
             playerTwoHeight: playerTwoHeight,
-            cooldownLeft: cooldownLeft
+            cooldownLeft: cooldownLeft,
+            cooldown: this.cooldown
         };
     }
 
