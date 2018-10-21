@@ -34,6 +34,7 @@ module.exports = class Engine {
         });
 
         this.world = world;
+        this.cannonBodies = [];
 
         // Set high friction so the wheels don't slip
         world.defaultContactMaterial.friction = 100;
@@ -58,6 +59,7 @@ module.exports = class Engine {
         });
         let platformBody = new p2.Body({
             position: [-250, -100],
+            friction: 1,
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -142,6 +144,11 @@ module.exports = class Engine {
     }
 
     endGame () {
+        // Stop the cannons from firing
+        for (let cannonBody of this.cannonBodies) {
+            clearInterval(cannonBody.shootLoop);
+        }
+        
         // Wait for blocks to settle and then calc the highest
         setTimeout(() => {
             this.isRunning = false;
@@ -326,6 +333,10 @@ module.exports = class Engine {
                 this.bulletBodies.splice(index, 1);
             }
         });
+        if (body.blockType && body.blockType === "cannon") {
+            const cannonBody = body;
+            clearInterval(cannonBody.shootLoop);
+        }
     }
 
     addBlock(playerId, x, y, selection, rotation) {
@@ -480,6 +491,8 @@ module.exports = class Engine {
         }, 1000, cannonBody, cannonBody.playerOne);
         cannonBody.height = 30;
         cannonBody.width = 30;
+        cannonBody.shootLoop = intId;
+        this.cannonBodies.push(cannonBody);
         return cannonBody;
     }
 
@@ -578,7 +591,7 @@ module.exports = class Engine {
             }
         }
         
-        maxHeight = maxHeight + 30; // Prevent collision
+        maxHeight = maxHeight; // Prevent collision
 
         return Math.max(Math.min(maxHeight, 400), minHeight);
     }
