@@ -184,17 +184,6 @@ module.exports = class Engine {
             );
         });
 
-        let cannons = this.getCannonBodies().map((cb) => (
-            {
-                x: cb.position[0],
-                y: cb.position[1],
-                width: cb.shapes[0].width,
-                height: cb.shapes[0].height,
-                angle: cb.angle,
-                playerOne: cb.playerOne
-            }
-        ));
-
         let platforms = this.getPlatformBodies().map((pb) => (
             {
                 x: pb.position[0],
@@ -228,7 +217,6 @@ module.exports = class Engine {
         return {
             bullets: bullets,
             blocks: blocks,
-            cannons: cannons,
             platforms: platforms,
             errorMessage: this.errorMessage,
             remainingTime: this.timer.remainingTime,
@@ -366,9 +354,12 @@ module.exports = class Engine {
             blockBody = this.newLBlock(x, y);
         }else if(blockType === "jankBlock"){
             blockBody = this.newJankBlock(x, y);
+        }else if(blockType ==="cannon"){
+            blockBody = this.newCannonBlock(playerId, x, y);
         }else {
             blockBody = this.newSquareBlock(x, y);
         }
+
         
         this.players[playerId].blockBodies.push(blockBody);
         this.world.addBody(blockBody);
@@ -430,7 +421,7 @@ module.exports = class Engine {
         return blockBody;
     }
 
-    addCannon(playerId, x, y) {
+    newCannonBlock(playerId, x, y) {
         if (this.timer.remainingTime === 0)
             return false;
 
@@ -444,7 +435,6 @@ module.exports = class Engine {
             mass: 150
         });
         cannonBody.addShape(cannonShape);
-        this.players[playerId].cannonBodies.push(cannonBody);
         cannonBody.playerOne = playerId === this.playerOne;
         let intId = setInterval((cannon, rightFacing) => {
             let x = cannon.position[0];
@@ -458,8 +448,9 @@ module.exports = class Engine {
             }
             this.addBullet(rightFacing, originX, originY);
         }, 1000, cannonBody, cannonBody.playerOne);
-        this.world.addBody(cannonBody);
-        return true; // failed to place the block
+        cannonBody.height = 30;
+        cannonBody.width = 30;
+        return cannonBody;
     }
 
     addBullet(rightFacing, x, y){

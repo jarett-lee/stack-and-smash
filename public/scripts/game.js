@@ -54,8 +54,6 @@ function draw(){
             drawBasicBlock(block);
         }
     });
-    // local.cannons.forEach((cannon) => {
-    // })
     local.platforms.forEach((platform) => {
         drawPlatform(platform);
     });
