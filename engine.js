@@ -54,10 +54,10 @@ module.exports = class Engine {
         // Create a platform
         let platformShape = new p2.Box({
             width: 200,
-            height: 5
+            height: 100
         });
         let platformBody = new p2.Body({
-            position: [-250, -100],
+            position: [-250, -150],
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -71,10 +71,10 @@ module.exports = class Engine {
         // Create a platform
         platformShape = new p2.Box({
             width: 200,
-            height: 5
+            height: 100
         });
         platformBody = new p2.Body({
-            position: [250, -100],
+            position: [250, -150],
             mass: 0
         });
         platformBody.addShape(platformShape);
@@ -380,7 +380,7 @@ module.exports = class Engine {
         let blockTypes = ["basicBlock", "longBlock", "lBlock"];
         let num = Math.random();
 
-        if(num < .1){
+        if(num < .5){
             return {type: "cannon"};
         }
         else{
@@ -437,31 +437,32 @@ module.exports = class Engine {
         cannonBody.addShape(cannonShape);
         cannonBody.playerOne = playerId === this.playerOne;
         let intId = setInterval((cannon, rightFacing) => {
+            const radius = 21;
+            let theta = cannon.angle + Math.PI/4;
             let x = cannon.position[0];
             let y = cannon.position[1];
-            let originY = y + 12;
-            let originX = x;
             if(!rightFacing){
-                originX-=15;
-            } else{
-                originX+=15;
+                theta = theta - Math.PI/2;
             }
-            this.addBullet(rightFacing, originX, originY);
+            let xOrigin = x - Math.cos(theta) * radius;
+            let yOrigin = y - Math.sin(theta)*radius;
+            this.addBullet(rightFacing, xOrigin, yOrigin, theta);
         }, 1000, cannonBody, cannonBody.playerOne);
         cannonBody.height = 30;
         cannonBody.width = 30;
         return cannonBody;
     }
 
-    addBullet(rightFacing, x, y){
+    addBullet(rightFacing, x, y, theta){
         let bulletShape = new p2.Circle({
             radius: 3
         });
-        let v = [500 * (rightFacing ? 1 : -1), 500]
+        console.log(theta);
+        let v = [800 * -Math.cos(theta), 800 * -Math.sin(theta)]
         let bulletBody = new p2.Body({
             position: [x,y],
             velocity: v,
-            mass: 50
+            mass: 40
         });
         bulletBody.addShape(bulletShape);
         this.bulletBodies.push(bulletBody);
