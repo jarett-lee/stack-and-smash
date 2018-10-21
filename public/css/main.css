@@ -14,6 +14,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background: url(../img/background.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }
 body > * {
     visibility: hidden;
@@ -36,7 +40,10 @@ button:hover {
 }
 
 .center-component {
-    width: 700px;
+    width: 600px;
+    background: rgba(255, 255, 255, .95);
+    border: 1px solid lightgrey;
+    padding: 10px;
     margin: auto;
     position: absolute;
     text-align: center;
@@ -49,7 +56,9 @@ button:hover {
     margin-top: calc(50vh - 275px);
     overflow: hidden;
     width: 800px;
+    background: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    user-select: none;
 }
 .game-canvas{
     display: block;
@@ -63,6 +72,8 @@ button:hover {
     border-top: 1px solid black;
     height: 100px;
     width: 100%;
+    display: flex;
+    user-select: none;
 }
 
 .no-select *{
@@ -100,6 +111,8 @@ button:hover {
     -webkit-transform: scaleY(-1);
     transform: scaleY(-1);
     -ms-filter: "FlipV";
+    opacity: 0.1;
+    filter: alpha(opacity=50);
 }
 
 #title a {
@@ -159,16 +172,16 @@ button:hover {
 }
 
 #game-controls-left {
-    width: 400px;
+    width: 300px;
     height: 100px;
-    float: left;
+    display: inline-block;
     margin-left: 5px;
 }
 
 #up-next {
     width: 300px;
     height: 100px;
-    float: right;
+    display: inline-block;
 }
 
 #right-left {
@@ -179,6 +192,26 @@ button:hover {
 
 #right-left > div {
     display: table-cell;
+}
+
+#timer {
+    pointer-events: none;
+    position: absolute;
+    top: calc(50% - 180px);
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    padding: 20px 0 20px 0;
+}
+
+#remainingTime {
+    font-size: 60px;
+    background-color: #565656;
+    color: transparent;
+    text-shadow: 0px 2px 3px rgba(255,255,255,0.8);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
 }
 
 #time-up {
@@ -206,4 +239,8 @@ button:hover {
 
 #results-message {
     font-size: 50px;
+}
+
+#next-right {
+    visibility: hidden;
 }

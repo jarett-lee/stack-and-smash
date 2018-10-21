@@ -15,12 +15,14 @@ const spriteSheet = {
     player1: {
         lBlock: new Image(30, 30),
         longBlock: new Image(15, 60),
-        basicBlock: new Image(30, 30)
+        basicBlock: new Image(30, 30),
+        horizLongBlock: new Image(60, 15)
     },
     player2: {
         lBlock: new Image(30, 30),
         longBlock: new Image(15, 60),
         basicBlock: new Image(30, 30),
+        horizLongBlock: new Image(60, 15)
     },
     cannon: new Image(30,30),
     bullet: new Image(6, 6),
@@ -33,10 +35,12 @@ spriteSheet.fire.src = "/img/ARW-2D-Flame Sprite-Sheet-by-Chromaeleon.png";
 spriteSheet.player1.lBlock.src = "/img/player1/lBlock.png";
 spriteSheet.player1.longBlock.src = "/img/player1/long.png";
 spriteSheet.player1.basicBlock.src = "/img/player1/basic.png";
+spriteSheet.player1.horizLongBlock.src = "/img/player1/horizontalLong.png"
 
 spriteSheet.player2.lBlock.src = "/img/player2/lBlock.png";
 spriteSheet.player2.longBlock.src = "/img/player2/long.png";
 spriteSheet.player2.basicBlock.src = "/img/player2/basic.png";
+spriteSheet.player2.horizLongBlock.src = "/img/player2/horizontalLong.png"
 
 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 ctx.translate(canvasWidth / 2, canvasHeight / 2)
@@ -56,6 +60,11 @@ function draw(){
         timeUp();
         isPlaying = false;
     }
+
+    if (!isPlaying)
+        document.getElementById("timer").style.visibility = "hidden";
+    else
+        document.getElementById("timer").style.visibility = "initial";
 
     if (isRunning && s.winner) {
         endGame();
@@ -81,7 +90,15 @@ function draw(){
     
     drawHeight(local);
 
-    remainingTimeDisplay.innerText = s.remainingTime;
+    let time = s.remainingTime.toString();
+    let decimal = time.split('.');
+    if (!decimal[1])
+        time += ".00";
+    else if (decimal[1].length === 1)
+        time += "0";
+
+    remainingTimeDisplay.innerText = time;
+
     errorDisplay.innerText = s.errorMessage;
 
     document.getElementById("player1-score").innerText = "" + Math.round((local.playerOneHeight + 70) * 10) / 10;
@@ -91,12 +108,15 @@ function draw(){
     if (s[player].leftBlock.type !== "cannon"){
         document.getElementById("left-image").src = playerSprite[s[player].leftBlock.type].src;
         document.getElementById("left-image").setAttribute('style', 'transform:rotate(' + s[player].leftBlock.angle + 'deg)');
+        document.getElementById("left-image").style.opacity = (s.cooldown - s.cooldownLeft)/s.cooldown;
     }else{
         document.getElementById("left-image").src = spriteSheet.cannon.src;
     }
+    
     if (s[player].rightBlock.type !== "cannon"){
         document.getElementById("right-image").src = playerSprite[s[player].rightBlock.type].src;
         document.getElementById("right-image").setAttribute('style', 'transform:rotate(' + s[player].rightBlock.angle + 'deg)');
+        document.getElementById("right-image").style.opacity = (s.cooldown - s.cooldownLeft)/ s.cooldown;
     }else{
         document.getElementById("right-image").src = spriteSheet.cannon.src;
     }
@@ -166,6 +186,9 @@ function drawBasicBlock(block){
             break;
         case "longBlock":
             ctx.drawImage(sprite, 0, 0, 15, 60, -block.width/2, -block.height/2, 15, 60);
+            break;
+        case "horizLongBlock":
+            ctx.drawImage(sprite, 0, 0, 60, 15, -block.width/2, -block.height/2,  60, 15);
             break;
     }
 
@@ -261,47 +284,28 @@ gameCanvas.addEventListener('click', (event) => {
         token: gameToken,
         x: x,
         y: y,
-        selection: "left",
-        rotation: s[player].leftBlock.type === "lBlock" ? s[player].leftBlock.angle + 270 : s[player].leftBlock.angle
+        selection: "left"
     }, (success) => {
     });
 });
 
-gameCanvas.addEventListener('mousemove', (event) => {
-    if(!s){
-        return;
-    }
-    let margin = gameCanvas.getBoundingClientRect();
-    let left = Math.floor(margin.left);
-    canvasMouseX = event.clientX - left - canvasWidth/2;
-    if(s.playerOne){
-        if(canvasMouseX > -80){
-            canvasMouseX = -80;
-        }
-    }else{
-        if(canvasMouseX < 80){
-            canvasMouseX = 80;
-        }
-    }
-})
-
-gameCanvas.addEventListener('contextmenu', function(ev) {
-    ev.preventDefault();
-    const rect = gameCanvas.getBoundingClientRect();
-    const x = event.clientX - rect.left - 400;
-    const y = (event.clientY - rect.top - 200) * -1;
-
-    socket.emit('create-block', {
-        token: gameToken,
-        x: x,
-        y: y,
-        selection: "right",
-        rotation: s[player].rightBlock.type === "lBlock" ? s[player].rightBlock.angle + 270 : s[player].rightBlock.angle
-    }, (success) => {
-    });
-
-    return false;
-}, false);
+// gameCanvas.addEventListener('contextmenu', function(ev) {
+//     ev.preventDefault();
+//     const rect = gameCanvas.getBoundingClientRect();
+//     const x = event.clientX - rect.left - 400;
+//     const y = (event.clientY - rect.top - 200) * -1;
+// 
+//     socket.emit('create-block', {
+//         token: gameToken,
+//         x: x,
+//         y: y,
+//         selection: "right",
+//         rotation: s[player].rightBlock.type === "lBlock" ? s[player].rightBlock.angle + 270 : s[player].rightBlock.angle
+//     }, (success) => {
+//     });
+// 
+//     return false;
+// }, false);
 
 function timeUp () {
     const timeUp = document.getElementById("time-up");
