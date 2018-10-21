@@ -48,11 +48,14 @@ function draw(){
     clear();
     let local = s;
     local.blocks.forEach((block) => {
-        drawBasicBlock(block);
+        if(block.blockType == "cannon"){
+            drawCannon(block);
+        }else {
+            drawBasicBlock(block);
+        }
     });
-    local.cannons.forEach((cannon) => {
-        drawCannon(cannon);
-    })
+    // local.cannons.forEach((cannon) => {
+    // })
     local.platforms.forEach((platform) => {
         drawPlatform(platform);
     });
@@ -71,11 +74,12 @@ function draw(){
         document.getElementById("left-image").src = playerSprite[s[player].leftBlock.type].src;
     else
         document.getElementById("left-image").src = spriteSheet.cannon.src;
-
+    
     if (s[player].rightBlock.type !== "cannon")
         document.getElementById("right-image").src = playerSprite[s[player].rightBlock.type].src;
     else
         document.getElementById("right-image").src = spriteSheet.cannon.src;
+    
 
     // let fps = Math.round(1000 / (Date.now() - d));
     // fpsCounter.innerHTML = Math.round(1000/(Date.now() - d)) + " " + s.time;
