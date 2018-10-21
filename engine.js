@@ -8,7 +8,7 @@ module.exports = class Engine {
 
         this.timer = {
             start: Date.now(),
-            duration: 30,
+            duration: 30.0,
             running: true
         };
 
@@ -160,7 +160,7 @@ module.exports = class Engine {
     }
 
     step(playerid) {
-        this.timer.remainingTime = Math.floor(this.timer.duration - ((Date.now() - this.timer.start) / 1000));
+        this.timer.remainingTime = Math.round((this.timer.duration - ((Date.now() - this.timer.start) / 1000)) * 100) / 100;
         if (this.timer.remainingTime < 0) {
             this.timer.remainingTime = 0;
 
