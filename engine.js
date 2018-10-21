@@ -329,6 +329,9 @@ module.exports = class Engine {
     }
 
     addBlock(playerId, x, y, selection, rotation) {
+        if(rotation >= 360){
+            rotation -= 360;
+        }
         if (this.timer.remainingTime === 0) {
             this.errorMessage = "Game is over";
             return false;
@@ -404,7 +407,7 @@ module.exports = class Engine {
     }
 
     getRandBlockType(){
-        let blockTypes = ["basicBlock", "longBlock", "lBlock"];
+        let blockTypes = ["lBlock"];
         let num = Math.random();
 
         if(num < .1){
@@ -412,7 +415,7 @@ module.exports = class Engine {
         }
         else{
             let type = blockTypes[Math.floor(Math.random() * blockTypes.length)];
-            let angle = Math.floor(Math.random() * 4) * 90;
+            let angle = Math.floor(Math.random() * 4) * 180;
             return {type: type, angle: angle};
         }
     }
