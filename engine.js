@@ -93,11 +93,23 @@ module.exports = class Engine {
         
         // Catch impacts in the world
         world.on("beginContact",function(evt){
-            const bodyA = evt.bodyA;
-            const bodyB = evt.bodyB;
+            let bodyA = evt.bodyA;
+            let bodyB = evt.bodyB;
             
             that.hasContactEver[bodyA.id] = true;
             that.hasContactEver[bodyB.id] = true;
+            
+            if (bodyA.animateType === "fire" && bodyB.blockType) {
+                const temp = bodyB;
+                bodyB = bodyA;
+                bodyA = temp;
+            }
+            if (bodyB.animateType === "fire" && bodyA.blockType) {
+                console.log('fire');
+                bodyA.mass = Math.max(bodyA.mass * 0.1, 0);
+                bodyA.friction = Math.max(bodyA.friction * 0.1, 0);
+                that.removeAnimate(bodyB);
+            }
         });
         
         this.createFakeWorld();
@@ -105,9 +117,12 @@ module.exports = class Engine {
 
     createFakeWorld() {
         const world = this.world;
+        
+        this.animateBodies = [];
 
         // Create bullets
         this.bulletBodies = [];
+        
         /*
         for (let i = 0; i < 5; i++) {
             let bulletShape = new p2.Circle({
@@ -137,7 +152,6 @@ module.exports = class Engine {
             this.bulletBodies.push(bulletBody);
             world.addBody(bulletBody);
         }
-        */
         
         let fireShape = new p2.Circle({
             radius: 5
@@ -152,8 +166,8 @@ module.exports = class Engine {
         world.addBody(fireBody);
         fireBody.animateType = "fire";
         
-        this.animateBodies = [];
         this.animateBodies.push(fireBody);
+        */
     }
 
     endGame () {
@@ -352,6 +366,11 @@ module.exports = class Engine {
         }
     }
 
+    removeAnimate(body){
+        this.world.removeBody(body);
+        this.animateBodies = this.animateBodies.filter( el => el.id !== body.id );
+    }
+
     addBlock(playerId, x, y, selection, rotation) {
         if(rotation >= 360){
             rotation -= 360;
@@ -513,7 +532,6 @@ module.exports = class Engine {
         let bulletShape = new p2.Circle({
             radius: 3
         });
-        console.log(theta);
         let v = [800 * -Math.cos(theta), 800 * -Math.sin(theta)]
         let bulletBody = new p2.Body({
             position: [x,y],
