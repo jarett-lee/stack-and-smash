@@ -93,15 +93,17 @@ function draw(){
     if (s[player].leftBlock.type !== "cannon"){
         document.getElementById("left-image").src = playerSprite[s[player].leftBlock.type].src;
         document.getElementById("left-image").setAttribute('style', 'transform:rotate(' + s[player].leftBlock.angle + 'deg)');
+        document.getElementById("left-image").style.opacity = .5;
     }else{
         document.getElementById("left-image").src = spriteSheet.cannon.src;
        
     }
-        
+    console.log("Opacity:", s[player].cdPercent);
     
     if (s[player].rightBlock.type !== "cannon"){
         document.getElementById("right-image").src = playerSprite[s[player].rightBlock.type].src;
         document.getElementById("right-image").setAttribute('style', 'transform:rotate(' + s[player].rightBlock.angle + 'deg)');
+        document.getElementById("right-image").style.opacity = .5;
     }else
         document.getElementById("right-image").src = spriteSheet.cannon.src;
     
