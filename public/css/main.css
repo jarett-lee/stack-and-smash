@@ -98,6 +98,9 @@ button:hover {
     -webkit-transform: scaleY(-1);
     transform: scaleY(-1);
     -ms-filter: "FlipV";
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('http://placehold.it/350x150');
+    opacity: 0.1;
+    filter: alpha(opacity=50);
 }
 
 #title a {
