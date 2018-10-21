@@ -55,10 +55,10 @@ module.exports = class Engine {
         // Create a platform
         let platformShape = new p2.Box({
             width: 200,
-            height: 100
+            height: 120
         });
         let platformBody = new p2.Body({
-            position: [-250, -150],
+            position: [-250, -180],
             friction: 1,
             mass: 0
         });
@@ -73,10 +73,10 @@ module.exports = class Engine {
         // Create a platform
         platformShape = new p2.Box({
             width: 200,
-            height: 100
+            height: 120
         });
         platformBody = new p2.Body({
-            position: [250, -150],
+            position: [250, -180],
             friction: 1,
             mass: 0
         });
@@ -434,7 +434,7 @@ module.exports = class Engine {
         let blockTypes = ["lBlock", "basicBlock", "longBlock"];
         let num = Math.random();
 
-        if(num < .5){
+        if(num < .25){
             return {type: "cannon"};
         }
         else{
@@ -495,11 +495,15 @@ module.exports = class Engine {
             let theta = cannon.angle + Math.PI/4;
             let x = cannon.position[0];
             let y = cannon.position[1];
+            let xOrigin, yOrigin;
             if(!rightFacing){
                 theta = theta - Math.PI/2;
+                xOrigin = x - Math.cos(theta) * radius;
+                yOrigin = y - Math.sin(theta)*radius;
+            } else {
+                xOrigin = x + Math.cos(theta) * radius;
+                yOrigin = y + Math.sin(theta) * radius;
             }
-            let xOrigin = x - Math.cos(theta) * radius;
-            let yOrigin = y - Math.sin(theta)*radius;
             this.addBullet(rightFacing, xOrigin, yOrigin, theta);
         }, 1000, cannonBody, cannonBody.playerOne);
         cannonBody.height = 30;
@@ -513,8 +517,12 @@ module.exports = class Engine {
         let bulletShape = new p2.Circle({
             radius: 3
         });
-        console.log(theta);
-        let v = [800 * -Math.cos(theta), 800 * -Math.sin(theta)]
+        let v;
+        if(rightFacing){
+            v = [800 * Math.cos(theta), 800 * Math.sin(theta)]
+        } else {
+            v = [800 * -Math.cos(theta), 800 * -Math.sin(theta)]
+        }
         let bulletBody = new p2.Body({
             position: [x,y],
             velocity: v,

@@ -159,6 +159,8 @@ function drawPlatform(platform){
     ctx.rotate(platform.angle * Math.PI / 180);
     ctx.fillStyle = "#bfbfbf";
     ctx.fillRect(-platform.width/2, -platform.height/2, platform.width, platform.height);
+    ctx.fillStyle = "#000000";
+    ctx.strokeRect(-platform.width / 2, -platform.height / 2, platform.width, platform.height);
     ctx.restore();
 }
 
