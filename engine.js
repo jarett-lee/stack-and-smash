@@ -87,6 +87,18 @@ module.exports = class Engine {
         this.players[player2].cannonBodies = [];
         platformBody.playerOne = false;
         
+        this.hasContactEver = {};
+        const that = this;
+        
+        // Catch impacts in the world
+        world.on("beginContact",function(evt){
+            const bodyA = evt.bodyA;
+            const bodyB = evt.bodyB;
+            
+            that.hasContactEver[bodyA.id] = true;
+            that.hasContactEver[bodyB.id] = true;
+        });
+        
         this.createFakeWorld();
     }
 
@@ -585,6 +597,9 @@ module.exports = class Engine {
         let maxHeight = blocks[0].position[1] + blocks[0].boundingRadius;
 
         for (let i = 1; i < blocks.length; i++) {
+            if (!this.hasContactEver[blocks[i].id]) {
+                continue;
+            }
             const height = blocks[i].position[1] + blocks[i].boundingRadius;
             if (height > maxHeight) {
                 maxHeight = height;
