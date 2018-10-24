@@ -23,7 +23,7 @@ module.exports = (server) => {
 
         socket.on('join-game', (token, callback) => {
             token = token.toUpperCase();
-            if(token in tokens){
+            if(token in tokens && !tokens[token].playerTwo){
                 //Join Room
                 socket.join(token);
                 tokens[token].playerTwo = socket.id;
